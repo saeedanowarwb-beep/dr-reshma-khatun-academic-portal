@@ -1,0 +1,86 @@
+{
+  "profile": {
+    "name": "Dr. Reshma Khatun",
+    "designation": "Assistant Professor",
+    "department": "Department of Education",
+    "institution": "Aliah University",
+    "address": "Aliah University, Park Circus Campus, Kolkata – 700014, West Bengal, India",
+    "email": "dr.reshmakhatun@aliah.ac.in",
+    "specialization": ["Teacher Education", "Higher Education", "Women Education", "Minority Education", "Gender Studies", "Pedagogy of Teaching English", "AI in Education"]
+  },
+  "education": [
+    {"degree":"Ph.D. in Education","institution":"Visva-Bharati University","year":2018},
+    {"degree":"M.A. in Education","institution":"I.G.N.O.U","year":2014},
+    {"degree":"M.Ed.","institution":"Harkamaya College of Education (S.U)","year":2013},
+    {"degree":"B.Ed.","institution":"Harkamaya College of Education (S.U)","year":2012},
+    {"degree":"M.A. in English","institution":"D.A.V. College Kanpur (Chhatrapati Shahu Ji Maharaj University)","year":2011},
+    {"degree":"B.A. (Honours) in English","institution":"Gyan Jyoti College (N.B.U)","year":2009}
+  ],
+  "teachingExperience": [
+    {"role":"Assistant Professor","institution":"Holy Child B.Ed College, Ghorapir, Noonbahi, Malda.","period":"1st Nov to 30th June, 2014"},
+    {"role":"Assistant Professor","institution":"Pragati College of Education, Siliguri.","period":"1st July 2014 to 4th September 2017"},
+    {"role":"Assistant Professor","institution":"Aliah University, Kolkata","period":"5th September 2017 to Present"}
+  ],
+  "books": [
+    "Khatun R (2015) “Occupational stress in Teachers”, APH Publishing Corporation, New Delhi",
+    "Mishra S & Khatun R. (2017) “Women Education in Modern Perspective”, Laxmi Book Publication, Solapur",
+    "Khatun R & Mishra S. (2017) “Teacher Education in the 21st Century”, ABS Books, New Delhi",
+    "Khatun R (2019) “Current Issues in Education in India”, ABS Books, New Delhi",
+    "Laskar, J.H. & Khatun R (2019) “Relevance of Maulana Abul Kalam Azad in the Present Era”, ABS Books, New Delhi",
+    "Laskar J.H, Khatun R & Hasnain S (2019) “Emerging Trends in Education”, ABS Books, New Delhi",
+    "Laskar J.H, Khatun R & Sarkar C (2023) “Education in Resurgent India”, Lulu Publication, USA",
+    "Laskar J.H. & Khatun R (2023) “Burning Issues in Education”, Lulu Publication, USA",
+    "Laskar J.H. & Khatun R (2023) “Emerging Trends of Education in Resurgent India: Prospects and Challenges in the light of NEP – 2020”, Notion Press, New Delhi",
+    "Mukherjee M, Khatun R & Maity C (2024) “Entrepreneurship Education: Perspective, Policy and Pedagogy”, Amitrakshar Publishers, Kolkata",
+    "Khatun, R. & Laskar, J. H. (2026). “Sustainable Development in the Context of Society, Education and Culture.” ABS Books, New Delhi"
+  ],
+  "journalPapers": [
+    "Teacher Education Programme: Major Issues and the Qualitative Measure, National Seminar on Strategies for Enhancing the Quality in Teacher Education Programme, Harkamaya College of Education, Tadong, Gangtok, East Sikkim (2013).",
+    "Burnout of Secondary School teachers in Relation to Some Personal Variables, International Journal, Asian Resonance, Volume-II, Issue-IV.",
+    "A Case Study on Academic Achievements of Higher Secondary Schools, A Peer Reviewed Journal, APH Publishing Corporation, Volume-III, Number 1, pp. 15-24.",
+    "Job Satisfaction of Teachers Working at the Elementary Level, A Bi-Annual Peer Reviewed Journal, Himalayan Journal of Social Sciences, pp. 91-99.",
+    "Rural women empowerment and micro finance, National Journal of Multidisciplinary Research and Development, pp. 1368-1372.",
+    "Vivekananda’s views on Women Empowerment, International Journal of Advanced Research and Development, pp. 987-990.",
+    "Teacher Education in India: A historical Perspective, International Journal of Advanced Research and Development, pp. 594-597.",
+    "Emancipation of Women and Feminist Ideas in Rokeya Sakhawat Hossain’s works, Contemporary Research in India, 8(1), 22-26.",
+    "Educational Ideas of Rokeya Sakhawat Hossain in Her Writings, Think India Journal, 22(14), 15816-15825, December 2019.",
+    "English Language and its Problems and Challenges faced by the Bengali Medium Minority Students of Murshidabad District, West Bengal, International Journal of Research Culture Society, 06, Special Issue 26, 75-80.",
+    "A Study of Academic Achievement in English in relation to Family Environment of Secondary Bengali Medium Minority Students of Murshidabad District, International Journal of Multidisciplinary Research and Growth Evaluation, 4(4), 413-417.",
+    "ICT in higher education for sustainable development in India: Perspective from NEP 2020, International Journal of Multidisciplinary Research and Growth Evaluation, 4(4), 423-426.",
+    "Analysing the Challenges of Academic Achievement in English of Bengali Medium Minority Students of Secondary Level: Evidences from Murshidabad District of West Bengal, Bharatiya Shiksha Shodh Patrika, 42(2)(II), 36-44.",
+    "Quality Education in Universities and Colleges: A New and Forward-looking vision for India's Higher Education System, Bharatiya Shiksha Shodh Patrika, 42(2)(II).",
+    "Transforming Classrooms: The Role of Robotics and AI in Modern Education, Bengal Journal of Social Science and development, 3(4), 19-42.",
+    "Paul, B. & Khatun, R. (2026). Cognitive Biases in Security Decision-Making Among Working and Non-working Women: A Qualitative Study. International Journal of Creative Research Thoughts. V-14(2).",
+    "Akter, M. N., & Khatun, R. (2025). Gender-based insights into the relationship between family environment and self-concept among minority adolescents. INSPA Journal of Applied and School Psychology, 6(2), 117–128.",
+    "Anowar, S., & Khatun, R. (2026). Prompt engineering in education: A systematic review of theory, applications, and future directions. Journal of Education, Society & Sustainable Practice, 2, 30–42."
+  ],
+  "phdSupervision": {
+    "ongoing": [
+      {"name":"Bithi Paul","topic":"Influence of Education and Family Environment on Self-esteem and Decision-making process of Working and Non-working women"},
+      {"name":"Saeed Anowar","topic":"Prompt Engineering Competency in Relation to Attitude and Motivation of Pre Service Teachers at the Secondary Level"}
+    ],
+    "awarded": [{"name":"Mary Najmin Akter","topic":"Academic Achievement in English of Secondary Bengali Medium Minority Students of Murshidabad District in Relation to Self-Concept, Study Habit and Family Environment"}],
+    "finalSubmission": [{"name":"Gulnasin","topic":"Quality Culture in the Institutions of Higher Education"}]
+  },
+  "awards": [
+    "Global Teacher Award 2023, AKS Education Awards (Global Education Fest), New Delhi (4 November 2023).",
+    "Best Oral Presentation Award – 2024 at International Conference in Bangkok, Thailand.",
+    "Best Innovative Academician – 2024, West Bengal.",
+    "Academic Excellence Award 2025, Research Culture Society at ICRI – 2025, Bali, Indonesia (5 May 2025).",
+    "Best Oral Presentation Award – 2025 at International Conference in Bali, Indonesia."
+  ],
+  "courses": [
+    "Summer Course on Pedagogy in Pre-Service Teacher Education, Azim Premji University, Bangalore (5–10 June 2023).",
+    "UGC Sponsored Online Refresher Course on Human Rights, UGC–HRDC, Aligarh Muslim University (20 July–2 August 2022).",
+    "UGC Sponsored Online Faculty Induction Programme, UGC–HRDC, Aligarh Muslim University (17 July–24 August 2021).",
+    "UGC Sponsored Refresher Course on Teacher Education, UGC–HRDC, University of North Bengal (4–24 January 2019).",
+    "Workshop on Quantitative Methodology and Data Analysis in Educational Research, Ramakrishna Mission Sikshanamandira, Belur (8–14 July 2019).",
+    "Workshop on Research Methodology in Social Sciences, Maulana Abul Kalam Azad Institute of Asian Studies (17–30 November 2017)."
+  ],
+  "sessionsChaired": 8,
+  "seminarsConferences": 49,
+  "desertationsSupervised": 15,
+  "memberships": 20,
+  "invitedTalks": 10,
+  "administrativeResponsibilities": 16
+}
