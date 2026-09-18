@@ -66,29 +66,53 @@ document.addEventListener("DOMContentLoaded", async function () {
 
   const { data: { session } } = await supabaseClient.auth.getSession();
 
-  if (session) {
+async function checkAdmin(userId) {
+  const { data, error } = await supabaseClient
+    .from("admin_users")
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  return !error && !!data;
+}
+
+if (session) {
+  const admin = await checkAdmin(session.user.id);
+
+  if (admin) {
     loginBox.style.display = "none";
     dashboard.style.display = "block";
+  } else {
+    message.textContent = "You are not authorized as an administrator.";
   }
+}
 
   loginBtn.addEventListener("click", async function () {
 
-    message.textContent = "Logging in...";
+  message.textContent = "Logging in...";
 
-    const { error } = await supabaseClient.auth.signInWithPassword({
-      email: emailInput.value.trim(),
-      password: passwordInput.value
-    });
-
-    if (error) {
-      message.textContent = error.message;
-      return;
-    }
-
-    loginBox.style.display = "none";
-    dashboard.style.display = "block";
-
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
+    email: emailInput.value.trim(),
+    password: passwordInput.value
   });
+
+  if (error) {
+    message.textContent = error.message;
+    return;
+  }
+
+  const admin = await checkAdmin(data.user.id);
+
+  if (!admin) {
+    await supabaseClient.auth.signOut();
+    message.textContent = "You are not authorized as an administrator.";
+    return;
+  }
+
+  loginBox.style.display = "none";
+  dashboard.style.display = "block";
+
+});
 document.getElementById("logoutBtn").addEventListener("click", async function () {
   await supabaseClient.auth.signOut();
   window.location.reload();
