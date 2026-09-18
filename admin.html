@@ -64,8 +64,12 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     loginBox.style.display = "none";
     dashboard.style.display = "block";
-  });
 
+  });
+document.getElementById("logoutBtn").addEventListener("click", async function () {
+  await supabaseClient.auth.signOut();
+  window.location.reload();
+});
 });
 </script>
 </body></html>
