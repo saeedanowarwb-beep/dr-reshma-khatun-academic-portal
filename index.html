@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en"> 
   <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
@@ -452,21 +452,28 @@ async function loadPublications() {
 
 function showPublicationTab(tab, button) {
 
-  document.querySelectorAll(".publication-panel")
-    .forEach(panel => {
-      panel.classList.remove("active");
-    });
+  const panels = document.querySelectorAll(".publication-panel");
+  const tabs = document.querySelectorAll(".pub-tab");
 
-  document.querySelectorAll(".pub-tab")
-    .forEach(btn => {
-      btn.classList.remove("active");
-    });
+  panels.forEach(panel => {
+    panel.classList.remove("active");
+    panel.style.display = "none";
+  });
 
-  document
-    .getElementById("pub-" + tab)
-    .classList.add("active");
+  tabs.forEach(btn => {
+    btn.classList.remove("active");
+  });
 
-  button.classList.add("active");
+  const selectedPanel = document.getElementById("pub-" + tab);
+
+  if (selectedPanel) {
+    selectedPanel.classList.add("active");
+    selectedPanel.style.display = "block";
+  }
+
+  if (button) {
+    button.classList.add("active");
+  }
 }
 
 
@@ -478,7 +485,6 @@ document.addEventListener("DOMContentLoaded", function () {
     loadPublications();
   } else {
     console.error("Supabase client is not available.");
-  }
 
 });
 </script>
