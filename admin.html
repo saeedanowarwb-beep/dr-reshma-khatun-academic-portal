@@ -40,12 +40,35 @@
 
   <p id="noticeMessage"></p>
 </div>
+  <div id="scholarForm" style="display:none;margin:25px 0;padding:25px;border:1px solid #ddd;border-radius:10px;">
+  <h2>Add PhD Scholar</h2>
+
+  <input id="scholarName" type="text" placeholder="Scholar Name"
+    style="width:100%;padding:10px;margin:8px 0;">
+
+  <textarea id="researchTitle" placeholder="Research Title"
+    style="width:100%;padding:10px;margin:8px 0;"></textarea>
+
+  <input id="scholarStatus" type="text" placeholder="Status (Ongoing/Awarded/Submitted)"
+    style="width:100%;padding:10px;margin:8px 0;">
+
+  <input id="scholarYear" type="number" placeholder="Year"
+    style="width:100%;padding:10px;margin:8px 0;">
+
+  <textarea id="scholarDetails" placeholder="Details (optional)"
+    style="width:100%;padding:10px;margin:8px 0;"></textarea>
+
+  <button id="saveScholarBtn">Save Scholar</button>
+  <button id="cancelScholarBtn" type="button">Cancel</button>
+
+  <p id="scholarMessage"></p>
+</div>
     <div class="cards three admin-cards">
       <article class="card"><h3>Profile</h3><p>Edit name, designation, bio, specialization and contact details.</p><button>Edit Profile</button></article>
       <article class="card"><h3>Notices</h3><p>Create, publish, edit and remove notices.</p><button id="addNoticeBtn">Add Notice</button></article>
       <article class="card"><h3>Resources</h3><p>Upload PDFs and study materials.</p><button>Upload PDF</button></article>
       <article class="card"><h3>Routine</h3><p>Update weekly class routine and teaching schedule.</p><button>Edit Routine</button></article>
-      <article class="card"><h3>Scholars</h3><p>Manage ongoing, awarded and submitted scholars.</p><button>Manage Scholars</button></article>
+      <article class="card"><h3>Scholars</h3><p>Manage ongoing, awarded and submitted scholars.</p><button id="manageScholarsBtn">Manage Scholars</button></article>
       <article class="card"><h3>Publications</h3><p>Add journal papers, books and book chapters.</p><button>Add Publication</button></article>
       <article class="card"><h3>News & Events</h3><p>Publish academic activities and announcements.</p><button>Add Update</button></article>
       <article class="card"><h3>Gallery</h3><p>Upload seminar, workshop and academic event photos.</p><button>Upload Images</button></article>
