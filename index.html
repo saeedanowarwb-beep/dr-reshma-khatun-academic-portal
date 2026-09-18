@@ -579,6 +579,90 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 </script>   
+    <section id="news" class="section">
+  <div class="wrap">
+    <div class="section-kicker">NEWS</div>
+    <h2>News & Updates</h2>
+
+    <div id="news-list" class="publication-list">
+      <p>Loading news...</p>
+    </div>
+  </div>
+</section>
+
+<script>
+async function loadNews() {
+
+  const newsList = document.getElementById("news-list");
+
+  try {
+
+    const { data: news, error } = await supabaseClient
+      .from("news")
+      .select("*")
+      .order("news_date", { ascending: false });
+
+    if (error) throw error;
+
+    if (!news || news.length === 0) {
+      newsList.innerHTML = "<p>No news available.</p>";
+      return;
+    }
+
+    newsList.innerHTML = news.map(item => {
+
+      const date = item.news_date
+        ? new Date(item.news_date).toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+          })
+        : "";
+
+      return `
+        <article>
+          <span>${date}</span>
+
+          <div>
+            <h3>${item.title || ""}</h3>
+            <p>${item.summary || ""}</p>
+
+            ${
+              item.content
+                ? `<p>${item.content}</p>`
+                : ""
+            }
+
+            ${
+              item.image_url
+                ? `<img src="${item.image_url}"
+                        alt="${item.title || "News"}"
+                        style="max-width:100%;border-radius:8px;margin-top:10px;">`
+                : ""
+            }
+          </div>
+        </article>
+      `;
+
+    }).join("");
+
+  } catch (error) {
+
+    console.error("News loading error:", error);
+
+    newsList.innerHTML =
+      "<p>Unable to load news.</p>";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  if (typeof supabaseClient !== "undefined") {
+    loadNews();
+  }
+
+});
+</script>
     <section id="activities" class="section">
     <div class="wrap">
         <div class="section-kicker">PROFESSIONAL ACTIVITIES</div>
