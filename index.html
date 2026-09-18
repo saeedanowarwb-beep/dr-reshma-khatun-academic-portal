@@ -120,21 +120,368 @@
       </div>
     </section>
 
-    <section id="publications" class="section alt">
-      <div class="wrap">
-        <div class="section-kicker">PUBLICATIONS</div>
-        <h2>Selected Publications</h2>
-        <div class="publication-list">
-          <article><span>2026</span><div><h3>Sustainable Development in the Context of Society, Education and Culture</h3><p>Book · ABS Books, New Delhi</p></div></article>
-          <article><span>2026</span><div><h3>Prompt engineering in education: A systematic review of theory, applications, and future directions</h3><p>Journal of Education, Society & Sustainable Practice, 2, 30–42.</p></div></article>
-          <article><span>2026</span><div><h3>Cognitive Biases in Security Decision-Making Among Working and Non-working Women: A Qualitative Study</h3><p>International Journal of Creative Research Thoughts, V-14(2).</p></div></article>
-          <article><span>2025</span><div><h3>Gender-based insights into the relationship between family environment and self-concept among minority adolescents</h3><p>INSPA Journal of Applied and School Psychology, 6(2), 117–128.</p></div></article>
-          <article><span>2024</span><div><h3>Transforming Classrooms: The Role of Robotics and AI in Modern Education</h3><p>Bengal Journal of Social Science and development, 3(4), 19–42.</p></div></article>
-          <article><span>2019</span><div><h3>Educational Ideas of Rokeya Sakhawat Hossain in Her Writings</h3><p>Think India Journal, 22(14), 15816–15825.</p></div></article>
-        </div>
-        <p class="note">The complete publication, book, chapter and seminar/conference records are included in the project data file for the next dynamic version.</p>
+  <section id="publications" class="section alt">
+  <div class="wrap">
+
+    <div class="section-kicker">PUBLICATIONS</div>
+    <h2>Publications</h2>
+
+    <div class="publication-tabs">
+      <button class="pub-tab active" onclick="showPublicationTab('all', this)">
+        All Publications
+      </button>
+
+      <button class="pub-tab" onclick="showPublicationTab('books', this)">
+        Books
+      </button>
+
+      <button class="pub-tab" onclick="showPublicationTab('chapters', this)">
+        Book Chapters
+      </button>
+
+      <button class="pub-tab" onclick="showPublicationTab('journals', this)">
+        Journal Papers
+      </button>
+    </div>
+
+    <!-- ALL PUBLICATIONS -->
+    <div id="pub-all" class="publication-panel active">
+      <h3>All Publications</h3>
+      <div id="all-publications-list" class="publication-list">
+        <p>Loading publications...</p>
       </div>
-    </section>
+    </div>
+
+    <!-- BOOKS -->
+    <div id="pub-books" class="publication-panel">
+      <h3>Books</h3>
+      <div id="books-list" class="publication-list">
+        <p>Loading books...</p>
+      </div>
+    </div>
+
+    <!-- BOOK CHAPTERS -->
+    <div id="pub-chapters" class="publication-panel">
+      <h3>Book Chapters</h3>
+      <div id="chapters-list" class="publication-list">
+        <p>Loading book chapters...</p>
+      </div>
+    </div>
+
+    <!-- JOURNAL PAPERS -->
+    <div id="pub-journals" class="publication-panel">
+      <h3>Journal Papers</h3>
+      <div id="journals-list" class="publication-list">
+        <p>Loading journal papers...</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+async function loadPublications() {
+
+  const allList = document.getElementById("all-publications-list");
+  const booksList = document.getElementById("books-list");
+  const chaptersList = document.getElementById("chapters-list");
+  const journalsList = document.getElementById("journals-list");
+
+  try {
+
+    /* ---------------- BOOKS ---------------- */
+
+    const { data: books, error: booksError } =
+      await supabaseClient
+        .from("books")
+        .select("*")
+        .order("year", { ascending: false })
+        .order("sort_order", { ascending: true });
+
+    if (booksError) throw booksError;
+
+
+    /* ---------------- BOOK CHAPTERS ---------------- */
+
+    const { data: chapters, error: chaptersError } =
+      await supabaseClient
+        .from("book_chapters")
+        .select("*")
+        .order("year", { ascending: false })
+        .order("sort_order", { ascending: true });
+
+    if (chaptersError) throw chaptersError;
+
+
+    /* ---------------- JOURNAL PAPERS ---------------- */
+
+    const { data: journals, error: journalsError } =
+      await supabaseClient
+        .from("journal_papers")
+        .select("*")
+        .order("year", { ascending: false })
+        .order("sort_order", { ascending: true });
+
+    if (journalsError) throw journalsError;
+
+
+    /* ---------------- BOOK HTML ---------------- */
+
+    const booksHTML = (books || []).map(book => {
+
+      return `
+        <article>
+          <span>${book.year || ""}</span>
+
+          <div>
+            <h3>${book.title || ""}</h3>
+
+            <p>
+              ${book.authors ? book.authors + " · " : ""}
+              ${book.publisher || ""}
+              ${book.isbn ? " · ISBN: " + book.isbn : ""}
+              ${book.pages ? " · " + book.pages + " pages" : ""}
+            </p>
+
+            ${
+              book.url
+                ? `<a href="${book.url}" target="_blank" rel="noopener">
+                    View Publication
+                   </a>`
+                : ""
+            }
+          </div>
+        </article>
+      `;
+
+    }).join("");
+
+
+    /* ---------------- CHAPTER HTML ---------------- */
+
+    const chaptersHTML = (chapters || []).map(chapter => {
+
+      return `
+        <article>
+          <span>${chapter.year || ""}</span>
+
+          <div>
+            <h3>${chapter.title || ""}</h3>
+
+            <p>
+              ${chapter.authors ? chapter.authors + " · " : ""}
+              ${chapter.book_title ? "<strong>" + chapter.book_title + "</strong> · " : ""}
+              ${chapter.publisher || ""}
+              ${chapter.isbn ? " · ISBN: " + chapter.isbn : ""}
+              ${chapter.pages ? " · " + chapter.pages : ""}
+            </p>
+
+            ${
+              chapter.url
+                ? `<a href="${chapter.url}" target="_blank" rel="noopener">
+                    View Chapter
+                   </a>`
+                : ""
+            }
+          </div>
+        </article>
+      `;
+
+    }).join("");
+
+
+    /* ---------------- JOURNAL HTML ---------------- */
+
+    const journalsHTML = (journals || []).map(paper => {
+
+      return `
+        <article>
+          <span>${paper.year || ""}</span>
+
+          <div>
+            <h3>${paper.title || ""}</h3>
+
+            <p>
+              ${paper.authors ? paper.authors + " · " : ""}
+              ${paper.journal || ""}
+              ${paper.volume_issue ? " · " + paper.volume_issue : ""}
+              ${paper.pages ? " · " + paper.pages : ""}
+            </p>
+
+            ${
+              paper.doi
+                ? `<p>
+                    DOI:
+                    <a href="${paper.doi.startsWith("http") ? paper.doi : "https://doi.org/" + paper.doi}"
+                       target="_blank"
+                       rel="noopener">
+                       ${paper.doi}
+                    </a>
+                   </p>`
+                : ""
+            }
+
+            ${
+              paper.indexing
+                ? `<small>Indexing: ${paper.indexing}</small>`
+                : ""
+            }
+
+            ${
+              paper.url
+                ? `<br>
+                   <a href="${paper.url}" target="_blank" rel="noopener">
+                     View Paper
+                   </a>`
+                : ""
+            }
+          </div>
+        </article>
+      `;
+
+    }).join("");
+
+
+    /* ---------------- DISPLAY ---------------- */
+
+    booksList.innerHTML =
+      booksHTML ||
+      "<p>No books available.</p>";
+
+    chaptersList.innerHTML =
+      chaptersHTML ||
+      "<p>No book chapters available.</p>";
+
+    journalsList.innerHTML =
+      journalsHTML ||
+      "<p>No journal papers available.</p>";
+
+
+    /* ---------------- ALL PUBLICATIONS ---------------- */
+
+    const allPublications = [
+
+      ...(books || []).map(book => ({
+        year: book.year,
+        title: book.title,
+        authors: book.authors,
+        description:
+          "Book · " +
+          (book.publisher || ""),
+        url: book.url,
+        type: "Book"
+      })),
+
+      ...(chapters || []).map(chapter => ({
+        year: chapter.year,
+        title: chapter.title,
+        authors: chapter.authors,
+        description:
+          "Book Chapter · " +
+          (chapter.book_title || ""),
+        url: chapter.url,
+        type: "Book Chapter"
+      })),
+
+      ...(journals || []).map(paper => ({
+        year: paper.year,
+        title: paper.title,
+        authors: paper.authors,
+        description:
+          "Journal · " +
+          (paper.journal || ""),
+        url: paper.url,
+        type: "Journal Paper"
+      }))
+
+    ].sort((a, b) => (b.year || 0) - (a.year || 0));
+
+
+    allList.innerHTML = allPublications.length
+      ? allPublications.map(item => {
+
+          return `
+            <article>
+              <span>${item.year || ""}</span>
+
+              <div>
+                <h3>${item.title || ""}</h3>
+
+                <p>
+                  ${item.authors ? item.authors + " · " : ""}
+                  ${item.description || ""}
+                </p>
+
+                ${
+                  item.url
+                    ? `<a href="${item.url}"
+                          target="_blank"
+                          rel="noopener">
+                         View Publication
+                       </a>`
+                    : ""
+                }
+              </div>
+            </article>
+          `;
+
+        }).join("")
+      : "<p>No publications available.</p>";
+
+
+  } catch (error) {
+
+    console.error("Publication loading error:", error);
+
+    allList.innerHTML =
+      "<p>Unable to load publications.</p>";
+
+    booksList.innerHTML =
+      "<p>Unable to load books.</p>";
+
+    chaptersList.innerHTML =
+      "<p>Unable to load book chapters.</p>";
+
+    journalsList.innerHTML =
+      "<p>Unable to load journal papers.</p>";
+  }
+}
+
+
+/* ---------------- TAB SWITCHING ---------------- */
+
+function showPublicationTab(tab, button) {
+
+  document.querySelectorAll(".publication-panel")
+    .forEach(panel => {
+      panel.classList.remove("active");
+    });
+
+  document.querySelectorAll(".pub-tab")
+    .forEach(btn => {
+      btn.classList.remove("active");
+    });
+
+  document
+    .getElementById("pub-" + tab)
+    .classList.add("active");
+
+  button.classList.add("active");
+}
+
+
+/* ---------------- LOAD PUBLICATIONS ---------------- */
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  if (typeof supabaseClient !== "undefined") {
+    loadPublications();
+  } else {
+    console.error("Supabase client is not available.");
+  }
+
+});
+</script>
 
     <section id="activities" class="section">
       <div class="wrap">
