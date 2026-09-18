@@ -93,6 +93,13 @@ document.getElementById("logoutBtn").addEventListener("click", async function ()
   await supabaseClient.auth.signOut();
   window.location.reload();
 });
+  document.getElementById("addNoticeBtn").addEventListener("click", function () {
+  document.getElementById("noticeForm").style.display = "block";
+});
+
+document.getElementById("cancelNoticeBtn").addEventListener("click", function () {
+  document.getElementById("noticeForm").style.display = "none";
+});
 });
 </script>
 </body></html>
