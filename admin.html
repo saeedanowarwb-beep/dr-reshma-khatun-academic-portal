@@ -124,7 +124,7 @@ document.getElementById("logoutBtn").addEventListener("click", async function ()
 document.getElementById("cancelNoticeBtn").addEventListener("click", function () {
   document.getElementById("noticeForm").style.display = "none";
 });
-  document.getElementById("saveNoticeBtn").addEventListener("click", async function () {
+ document.getElementById("saveNoticeBtn").addEventListener("click", async function () {
 
   const title = document.getElementById("noticeTitle").value.trim();
   const description = document.getElementById("noticeDescription").value.trim();
@@ -165,6 +165,8 @@ document.getElementById("cancelNoticeBtn").addEventListener("click", function ()
   document.getElementById("noticeCategory").value = "";
   document.getElementById("noticePdf").value = "";
   document.getElementById("noticePublished").checked = false;
+
+});
 
 });
 });
