@@ -2,8 +2,19 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin Dashboard | Dr. Reshma Khatun</title><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="supabase-config.js"></script></head>
 <body class="admin-body">
-  <header class="topbar"><div class="wrap nav-wrap"><a class="brand" href="index.html">Dr. Reshma Khatun</a><span class="admin-pill">Admin Preview</span></div></header>
-  <main class="section"><div class="wrap">
+<header class="topbar"><div class="wrap nav-wrap"><a class="brand" href="index.html">Dr. Reshma Khatun</a><span class="admin-pill">Admin Preview</span></div></header>
+<div id="loginBox" style="max-width:420px;margin:40px auto;padding:25px;border:1px solid #ddd;border-radius:10px;">
+  <h2>Admin Login</h2>
+
+  <input id="loginEmail" type="email" placeholder="Email" style="width:100%;padding:10px;margin:8px 0;">
+
+  <input id="loginPassword" type="password" placeholder="Password" style="width:100%;padding:10px;margin:8px 0;">
+
+  <button id="loginBtn">Login</button>
+
+  <p id="loginMessage"></p>
+</div>
+<main class="section"><div class="wrap">
     <div class="section-kicker">ADMIN DASHBOARD</div><h1>Manage Academic Portal</h1>
     <div class="admin-notice">This is the Phase-1 dashboard mockup. Secure login, database, file uploads and live editing will be connected in the Supabase phase.</div>
     <div class="cards three admin-cards">
