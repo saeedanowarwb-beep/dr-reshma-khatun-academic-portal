@@ -489,8 +489,98 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+
+<section id="notices" class="section alt">
+  <div class="wrap">
+    <div class="section-kicker">NOTICE BOARD</div>
+    <h2>Notices</h2>
+
+    <div id="notices-list" class="publication-list">
+      <p>Loading notices...</p>
+    </div>
+  </div>
+</section>
+
+<script>
+async function loadNotices() {
+
+  const noticesList = document.getElementById("notices-list");
+
+  try {
+
+    const { data: notices, error } = await supabaseClient
+      .from("notices")
+      .select("*")
+      .eq("is_published", true)
+      .order("notice_date", { ascending: false });
+
+    if (error) throw error;
+
+    if (!notices || notices.length === 0) {
+      noticesList.innerHTML = "<p>No notices available.</p>";
+      return;
+    }
+
+    noticesList.innerHTML = notices.map(notice => {
+
+      const date = notice.notice_date
+        ? new Date(notice.notice_date).toLocaleDateString("en-IN", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric"
+          })
+        : "";
+
+      return `
+        <article>
+          <span>${date}</span>
+
+          <div>
+            <h3>${notice.title || ""}</h3>
+
+            <p>${notice.description || ""}</p>
+
+            ${
+              notice.category
+                ? `<small>Category: ${notice.category}</small>`
+                : ""
+            }
+
+            ${
+              notice.pdf_url
+                ? `<br>
+                   <a href="${notice.pdf_url}"
+                      target="_blank"
+                      rel="noopener">
+                     View / Download Notice
+                   </a>`
+                : ""
+            }
+          </div>
+        </article>
+      `;
+
+    }).join("");
+
+  } catch (error) {
+
+    console.error("Notice loading error:", error);
+
+    noticesList.innerHTML =
+      "<p>Unable to load notices.</p>";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+
+  if (typeof supabaseClient !== "undefined") {
+    loadNotices();
+  }
+
+});
+</script>   
     <section id="activities" class="section">
-      <div class="wrap">
+    <div class="wrap">
         <div class="section-kicker">PROFESSIONAL ACTIVITIES</div>
         <h2>Awards, Courses & Activities</h2>
         <div class="cards three">
