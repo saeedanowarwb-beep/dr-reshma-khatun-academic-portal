@@ -100,6 +100,49 @@ document.getElementById("logoutBtn").addEventListener("click", async function ()
 document.getElementById("cancelNoticeBtn").addEventListener("click", function () {
   document.getElementById("noticeForm").style.display = "none";
 });
+  document.getElementById("saveNoticeBtn").addEventListener("click", async function () {
+
+  const title = document.getElementById("noticeTitle").value.trim();
+  const description = document.getElementById("noticeDescription").value.trim();
+  const noticeDate = document.getElementById("noticeDate").value;
+  const category = document.getElementById("noticeCategory").value.trim();
+  const pdfUrl = document.getElementById("noticePdf").value.trim();
+  const isPublished = document.getElementById("noticePublished").checked;
+  const noticeMessage = document.getElementById("noticeMessage");
+
+  if (!title || !description || !noticeDate) {
+    noticeMessage.textContent = "Please fill in the title, description and date.";
+    return;
+  }
+
+  noticeMessage.textContent = "Saving notice...";
+
+  const { error } = await supabaseClient
+    .from("notices")
+    .insert([{
+      title: title,
+      description: description,
+      notice_date: noticeDate,
+      category: category || null,
+      pdf_url: pdfUrl || null,
+      is_published: isPublished
+    }]);
+
+  if (error) {
+    noticeMessage.textContent = "Error: " + error.message;
+    return;
+  }
+
+  noticeMessage.textContent = "Notice saved successfully.";
+
+  document.getElementById("noticeTitle").value = "";
+  document.getElementById("noticeDescription").value = "";
+  document.getElementById("noticeDate").value = "";
+  document.getElementById("noticeCategory").value = "";
+  document.getElementById("noticePdf").value = "";
+  document.getElementById("noticePublished").checked = false;
+
+});
 });
 </script>
 </body></html>
