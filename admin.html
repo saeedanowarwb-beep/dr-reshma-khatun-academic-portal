@@ -142,10 +142,50 @@ document.getElementById("logoutBtn").addEventListener("click", async function ()
 });
  document.getElementById("addNoticeBtn").addEventListener("click", function () {
   document.getElementById("noticeForm").style.display = "block";
-});
+})
 
-document.getElementById("manageScholarsBtn").addEventListener("click", function () {
-  document.getElementById("scholarForm").style.display = "block";
+document.getElementById("cancelScholarBtn").addEventListener("click", function () {
+  document.getElementById("scholarForm").style.display = "none";
+}); 
+  document.getElementById("saveScholarBtn").addEventListener("click", async function () {
+
+  const scholarName = document.getElementById("scholarName").value.trim();
+  const researchTitle = document.getElementById("researchTitle").value.trim();
+  const scholarStatus = document.getElementById("scholarStatus").value.trim();
+  const scholarYear = document.getElementById("scholarYear").value;
+  const scholarDetails = document.getElementById("scholarDetails").value.trim();
+  const scholarMessage = document.getElementById("scholarMessage");
+
+  if (!scholarName || !researchTitle || !scholarStatus || !scholarYear) {
+    scholarMessage.textContent = "Please fill in the scholar name, research title, status and year.";
+    return;
+  }
+
+  scholarMessage.textContent = "Saving scholar...";
+
+  const { error } = await supabaseClient
+    .from("phd_scholars")
+    .insert([{
+      scholar_name: scholarName,
+      research_title: researchTitle,
+      status: scholarStatus,
+      year: parseInt(scholarYear),
+      details: scholarDetails || null
+    }]);
+
+  if (error) {
+    scholarMessage.textContent = "Error: " + error.message;
+    return;
+  }
+
+  scholarMessage.textContent = "Scholar saved successfully.";
+
+  document.getElementById("scholarName").value = "";
+  document.getElementById("researchTitle").value = "";
+  document.getElementById("scholarStatus").value = "";
+  document.getElementById("scholarYear").value = "";
+  document.getElementById("scholarDetails").value = "";
+
 });
 
 document.getElementById("cancelNoticeBtn").addEventListener("click", function () {
