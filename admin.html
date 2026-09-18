@@ -29,4 +29,43 @@
       <article class="card"><h3>Site Settings</h3><p>Manage portal title, footer text and social/research links.</p><button>Settings</button></article>
     </div>
   </div></main>
+  <script>
+document.addEventListener("DOMContentLoaded", async function () {
+
+  const loginBox = document.getElementById("loginBox");
+  const loginBtn = document.getElementById("loginBtn");
+  const emailInput = document.getElementById("loginEmail");
+  const passwordInput = document.getElementById("loginPassword");
+  const message = document.getElementById("loginMessage");
+  const dashboard = document.querySelector("main.section");
+
+  dashboard.style.display = "none";
+
+  const { data: { session } } = await supabaseClient.auth.getSession();
+
+  if (session) {
+    loginBox.style.display = "none";
+    dashboard.style.display = "block";
+  }
+
+  loginBtn.addEventListener("click", async function () {
+
+    message.textContent = "Logging in...";
+
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email: emailInput.value.trim(),
+      password: passwordInput.value
+    });
+
+    if (error) {
+      message.textContent = error.message;
+      return;
+    }
+
+    loginBox.style.display = "none";
+    dashboard.style.display = "block";
+  });
+
+});
+</script>
 </body></html>
