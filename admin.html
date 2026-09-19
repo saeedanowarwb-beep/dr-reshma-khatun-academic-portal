@@ -34,6 +34,7 @@ body{background:#f7f8fb}.admin-wrap{max-width:1200px;margin:auto;padding:28px 20
 <input id="password" type="password" placeholder="Password">
 <button id="loginBtn">Login</button>
 <p id="loginMsg" class="msg"></p>
+<p id="connectionMsg" class="msg" style="font-size:13px;color:#666;"></p>
 </div>
 
 <main id="app" class="hidden"><div class="admin-wrap">
@@ -47,7 +48,19 @@ body{background:#f7f8fb}.admin-wrap{max-width:1200px;margin:auto;padding:28px 20
 
 <script>
 (()=>{"use strict";
-const S=window.supabaseClient;
+const SUPABASE_URL = "https://uupdkljuavsxkrefmzr.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_GC-wNHVFIGCxNujgk7t1XQA_jnxXdVqcb";
+const S = window.supabaseClient || window.supabase.createClient(
+ SUPABASE_URL,
+ SUPABASE_PUBLISHABLE_KEY,
+ {
+  auth:{
+   persistSession:true,
+   autoRefreshToken:true,
+   detectSessionInUrl:true
+  }
+ }
+);
 const $=id=>document.getElementById(id);
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 if(!S){$("loginMsg").textContent="Supabase client is not available.";return}
@@ -167,17 +180,114 @@ Object.entries(configs).filter(([t])=>t!=="profiles").forEach(([table,c])=>{
 });
 
 $("loginBtn").onclick=login;
+checkAuthConnection();
 $("password").addEventListener("keydown",e=>{if(e.key==="Enter")login()});
 async function isAdmin(uid){
  const {data,error}=await S.from("admin_users").select("user_id").eq("user_id",uid).maybeSingle();
  return !error&&!!data;
 }
+async function checkAuthConnection(){
+ const el=$("connectionMsg");
+ if(!el)return;
+ try{
+  const response=await fetch(
+   SUPABASE_URL+"/auth/v1/health",
+   {
+    method:"GET",
+    headers:{"apikey":SUPABASE_PUBLISHABLE_KEY},
+    cache:"no-store"
+   }
+  );
+  if(response.ok){
+   el.textContent="Supabase Auth connection: OK";
+   el.style.color="#18794e";
+  }else{
+   el.textContent="Supabase Auth responded with HTTP "+response.status+".";
+   el.style.color="#b54708";
+  }
+ }catch(error){
+  el.textContent="Supabase Auth connection could not be reached.";
+  el.style.color="#b42318";
+ }
+}
+
 async function login(){
+ const email=$("email").value.trim();
+ const password=$("password").value;
+
+ if(!email||!password){
+  $("loginMsg").textContent="Please enter your email and password.";
+  return;
+ }
+
+ const btn=$("loginBtn");
+ btn.disabled=true;
  $("loginMsg").textContent="Logging in...";
- const {data,error}=await S.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});
- if(error){$("loginMsg").textContent=error.message;return}
- if(!await isAdmin(data.user.id)){await S.auth.signOut();$("loginMsg").textContent="You are not authorized as an administrator.";return}
- show(data.user);
+
+ try{
+  let result=await S.auth.signInWithPassword({email,password});
+
+  if(result.error && /failed to fetch|networkerror|load failed/i.test(result.error.message||"")){
+   const response=await fetch(
+    SUPABASE_URL+"/auth/v1/token?grant_type=password",
+    {
+     method:"POST",
+     headers:{
+      "Content-Type":"application/json",
+      "apikey":SUPABASE_PUBLISHABLE_KEY
+     },
+     body:JSON.stringify({email,password}),
+     cache:"no-store"
+    }
+   );
+
+   const text=await response.text();
+   let payload={};
+   try{payload=JSON.parse(text)}catch(_){}
+
+   if(!response.ok){
+    const detail=payload.msg||payload.message||payload.error_description||payload.error||text||("HTTP "+response.status);
+    throw new Error("Supabase Auth: "+detail);
+   }
+
+   const sessionResult=await S.auth.setSession({
+    access_token:payload.access_token,
+    refresh_token:payload.refresh_token
+   });
+
+   if(sessionResult.error) throw sessionResult.error;
+
+   result={
+    data:{user:payload.user||sessionResult.data.user},
+    error:null
+   };
+  }
+
+  if(result.error){
+   $("loginMsg").textContent=result.error.message;
+   return;
+  }
+
+  const user=result.data&&result.data.user;
+  if(!user){
+   $("loginMsg").textContent="Login succeeded but no user session was returned.";
+   return;
+  }
+
+  if(!await isAdmin(user.id)){
+   await S.auth.signOut();
+   $("loginMsg").textContent="You are not authorized as an administrator.";
+   return;
+  }
+
+  show(user);
+
+ }catch(error){
+  console.error("Admin login error:",error);
+  $("loginMsg").textContent=error&&error.message?error.message:String(error);
+ }finally{
+  btn.disabled=false;
+ }
 }
 function show(user){$("login").classList.add("hidden");$("app").classList.remove("hidden");$("logout").classList.remove("hidden");$("user").textContent="Signed in as "+(user.email||"");}
 $("logout").onclick=async()=>{await S.auth.signOut();location.reload()};
