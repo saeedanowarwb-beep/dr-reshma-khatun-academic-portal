@@ -113,11 +113,9 @@
       <div class="wrap">
         <div class="section-kicker">RESEARCH SCHOLARS</div>
         <h2>PhD Supervision</h2>
-        <div class="cards two">
-          <article class="card"><span class="tag">ONGOING</span><h3>Bithi Paul</h3><p>Influence of Education and Family Environment on Self-esteem and Decision-making process of Working and Non-working women.</p></article>
-          <article class="card"><span class="tag">ONGOING</span><h3>Saeed Anowar</h3><p>Prompt Engineering Competency in Relation to Attitude and Motivation of Pre Service Teachers at the Secondary Level.</p></article>
-          <article class="card"><span class="tag awarded">AWARDED</span><h3>Mary Najmin Akter</h3><p>Academic Achievement in English of Secondary Bengali Medium Minority Students of Murshidabad District in Relation to Self-Concept, Study Habit and Family Environment.</p></article>
-          <article class="card"><span class="tag final">FINAL SUBMISSION</span><h3>Gulnasin</h3><p>Quality Culture in the Institutions of Higher Education.</p></article>
+       <div id="scholarsList" class="cards two">
+  <p>Loading scholars...</p>
+</div>
         </div>
       </div>
     </section>
@@ -478,13 +476,43 @@ function showPublicationTab(tab, button) {
   }
 }
 
+<script>
+async function loadScholars() {
 
+  const scholarsList = document.getElementById("scholarsList");
+
+  const { data: scholars, error } = await supabaseClient
+    .from("phd_scholars")
+    .select("*")
+    .order("year", { ascending: false });
+
+  if (error) {
+    console.error("Scholar loading error:", error);
+    scholarsList.innerHTML = "<p>Unable to load scholars.</p>";
+    return;
+  }
+
+  if (!scholars || scholars.length === 0) {
+    scholarsList.innerHTML = "<p>No scholars available.</p>";
+    return;
+  }
+
+  scholarsList.innerHTML = scholars.map(scholar => `
+    <article class="card">
+      <span class="tag">${scholar.status || ""}</span>
+      <h3>${scholar.scholar_name || ""}</h3>
+      <p>${scholar.research_title || ""}</p>
+    </article>
+  `).join("");
+}
+</script>
 /* ---------------- LOAD PUBLICATIONS ---------------- */
 
 document.addEventListener("DOMContentLoaded", function () {
 
   if (typeof supabaseClient !== "undefined") {
     loadPublications();
+    loadScholars();
   } else {
     console.error("Supabase client is not available.");
 }
