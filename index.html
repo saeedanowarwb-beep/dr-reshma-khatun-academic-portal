@@ -196,6 +196,11 @@
 </section>
 
 <script>
+  
+/* =========================
+   PUBLICATIONS
+========================= */
+
 async function loadPublications() {
 
   const allList = document.getElementById("all-publications-list");
@@ -204,8 +209,6 @@ async function loadPublications() {
   const journalsList = document.getElementById("journals-list");
 
   try {
-
-    /* ---------------- BOOKS ---------------- */
 
     const { data: books, error: booksError } =
       await supabaseClient
@@ -217,8 +220,6 @@ async function loadPublications() {
     if (booksError) throw booksError;
 
 
-    /* ---------------- BOOK CHAPTERS ---------------- */
-
     const { data: chapters, error: chaptersError } =
       await supabaseClient
         .from("book_chapters")
@@ -228,8 +229,6 @@ async function loadPublications() {
 
     if (chaptersError) throw chaptersError;
 
-
-    /* ---------------- JOURNAL PAPERS ---------------- */
 
     const { data: journals, error: journalsError } =
       await supabaseClient
@@ -241,24 +240,19 @@ async function loadPublications() {
     if (journalsError) throw journalsError;
 
 
-    /* ---------------- BOOK HTML ---------------- */
-
     const booksHTML = (books || []).map(book => {
 
       return `
         <article>
           <span>${book.year || ""}</span>
-
           <div>
             <h3>${book.title || ""}</h3>
-
             <p>
               ${book.authors ? book.authors + " · " : ""}
               ${book.publisher || ""}
               ${book.isbn ? " · ISBN: " + book.isbn : ""}
               ${book.pages ? " · " + book.pages + " pages" : ""}
             </p>
-
             ${
               book.url
                 ? `<a href="${book.url}" target="_blank" rel="noopener">
@@ -273,17 +267,13 @@ async function loadPublications() {
     }).join("");
 
 
-    /* ---------------- CHAPTER HTML ---------------- */
-
     const chaptersHTML = (chapters || []).map(chapter => {
 
       return `
         <article>
           <span>${chapter.year || ""}</span>
-
           <div>
             <h3>${chapter.title || ""}</h3>
-
             <p>
               ${chapter.authors ? chapter.authors + " · " : ""}
               ${chapter.book_title ? "<strong>" + chapter.book_title + "</strong> · " : ""}
@@ -291,7 +281,6 @@ async function loadPublications() {
               ${chapter.isbn ? " · ISBN: " + chapter.isbn : ""}
               ${chapter.pages ? " · " + chapter.pages : ""}
             </p>
-
             ${
               chapter.url
                 ? `<a href="${chapter.url}" target="_blank" rel="noopener">
@@ -306,17 +295,13 @@ async function loadPublications() {
     }).join("");
 
 
-    /* ---------------- JOURNAL HTML ---------------- */
-
     const journalsHTML = (journals || []).map(paper => {
 
       return `
         <article>
           <span>${paper.year || ""}</span>
-
           <div>
             <h3>${paper.title || ""}</h3>
-
             <p>
               ${paper.authors ? paper.authors + " · " : ""}
               ${paper.journal || ""}
@@ -328,10 +313,12 @@ async function loadPublications() {
               paper.doi
                 ? `<p>
                     DOI:
-                    <a href="${paper.doi.startsWith("http") ? paper.doi : "https://doi.org/" + paper.doi}"
+                    <a href="${paper.doi.startsWith("http")
+                      ? paper.doi
+                      : "https://doi.org/" + paper.doi}"
                        target="_blank"
                        rel="noopener">
-                       ${paper.doi}
+                      ${paper.doi}
                     </a>
                    </p>`
                 : ""
@@ -358,22 +345,15 @@ async function loadPublications() {
     }).join("");
 
 
-    /* ---------------- DISPLAY ---------------- */
-
     booksList.innerHTML =
-      booksHTML ||
-      "<p>No books available.</p>";
+      booksHTML || "<p>No books available.</p>";
 
     chaptersList.innerHTML =
-      chaptersHTML ||
-      "<p>No book chapters available.</p>";
+      chaptersHTML || "<p>No book chapters available.</p>";
 
     journalsList.innerHTML =
-      journalsHTML ||
-      "<p>No journal papers available.</p>";
+      journalsHTML || "<p>No journal papers available.</p>";
 
-
-    /* ---------------- ALL PUBLICATIONS ---------------- */
 
     const allPublications = [
 
@@ -381,9 +361,7 @@ async function loadPublications() {
         year: book.year,
         title: book.title,
         authors: book.authors,
-        description:
-          "Book · " +
-          (book.publisher || ""),
+        description: "Book · " + (book.publisher || ""),
         url: book.url,
         type: "Book"
       })),
@@ -392,9 +370,7 @@ async function loadPublications() {
         year: chapter.year,
         title: chapter.title,
         authors: chapter.authors,
-        description:
-          "Book Chapter · " +
-          (chapter.book_title || ""),
+        description: "Book Chapter · " + (chapter.book_title || ""),
         url: chapter.url,
         type: "Book Chapter"
       })),
@@ -403,9 +379,7 @@ async function loadPublications() {
         year: paper.year,
         title: paper.title,
         authors: paper.authors,
-        description:
-          "Journal · " +
-          (paper.journal || ""),
+        description: "Journal · " + (paper.journal || ""),
         url: paper.url,
         type: "Journal Paper"
       }))
@@ -419,15 +393,12 @@ async function loadPublications() {
           return `
             <article>
               <span>${item.year || ""}</span>
-
               <div>
                 <h3>${item.title || ""}</h3>
-
                 <p>
                   ${item.authors ? item.authors + " · " : ""}
                   ${item.description || ""}
                 </p>
-
                 ${
                   item.url
                     ? `<a href="${item.url}"
@@ -464,7 +435,9 @@ async function loadPublications() {
 }
 
 
-/* ---------------- TAB SWITCHING ---------------- */
+/* =========================
+   PUBLICATION TAB SWITCHING
+========================= */
 
 function showPublicationTab(tab, button) {
 
@@ -480,7 +453,8 @@ function showPublicationTab(tab, button) {
     btn.classList.remove("active");
   });
 
-  const selectedPanel = document.getElementById("pub-" + tab);
+  const selectedPanel =
+    document.getElementById("pub-" + tab);
 
   if (selectedPanel) {
     selectedPanel.classList.add("active");
@@ -493,65 +467,79 @@ function showPublicationTab(tab, button) {
 }
 
 
+/* =========================
+   SCHOLARS
+========================= */
+
 async function loadScholars() {
 
-  const scholarsList = document.getElementById("scholarsList");
+  const scholarsList =
+    document.getElementById("scholarsList");
 
-  const { data: scholars, error } = await supabaseClient
-    .from("phd_scholars")
-    .select("*")
-    .order("year", { ascending: false });
+  try {
 
-  if (error) {
+    const { data: scholars, error } =
+      await supabaseClient
+        .from("phd_scholars")
+        .select("*")
+        .order("year", { ascending: false });
+
+    if (error) {
+      throw error;
+    }
+
+    if (!scholars || scholars.length === 0) {
+      scholarsList.innerHTML =
+        "<p>No scholars available.</p>";
+      return;
+    }
+
+    window.scholarData = scholars;
+
+    scholarsList.innerHTML =
+      scholars.map((scholar, index) => `
+        <article class="card">
+
+          <span class="tag">
+            ${scholar.status || ""}
+          </span>
+
+          <h3>
+            ${scholar.scholar_name || ""}
+          </h3>
+
+          <p>
+            ${scholar.research_title || ""}
+          </p>
+
+          <button
+            class="scholar-details-btn"
+            type="button"
+            onclick="showScholarDetails(${index})">
+            View Details →
+          </button>
+
+        </article>
+      `).join("");
+
+  } catch (error) {
+
     console.error("Scholar loading error:", error);
-    scholarsList.innerHTML = "<p>Unable to load scholars.</p>";
-    return;
+
+    scholarsList.innerHTML =
+      "<p>Unable to load scholars.</p>";
   }
+}
 
-  if (!scholars || scholars.length === 0) {
-    scholarsList.innerHTML = "<p>No scholars available.</p>";
-    return;
-  }
 
-  window.scholarData = scholars;
+/* =========================
+   SCHOLAR DETAILS MODAL
+========================= */
 
-  scholarsList.innerHTML = scholars.map((scholar, index) => `
-    <article class="card">
-      <span class="tag">${scholar.status || ""}</span>
+function showScholarDetails(index) {
 
-      <h3>${scholar.scholar_name || ""}</h3>
-
-      <p>${scholar.research_title || ""}</p>
-
-      <button
-        class="scholar-details-btn"
-        type="button"
-        onclick="showScholarDetails(${index})">
-        View Details →
-      </button>
-    </article>
-  `).join("");
-}) {
-
-  const scholarsList = document.getElementById("scholarsList");
-
-  const { data: scholars, error } = await supabaseClient
-    .from("phd_scholars")
-    .select("*")
-    .order("year", { ascending: false });
-
-  if (error) {
-    console.error("Scholar loading error:", error);
-    scholarsList.innerHTML = "<p>Unable to load scholars.</p>";
-    return;
-  }
-
-  if (!scholars || scholars.length === 0) {
-    scholarsList.innerHTML = "<p>No scholars available.</p>";
-    return;
-  }function showScholarDetails(index) {
-
-  const scholar = window.scholarData[index];
+  const scholar =
+    window.scholarData[index];
 
   if (!scholar) return;
 
@@ -561,60 +549,80 @@ async function loadScholars() {
   document.getElementById("scholarModalTitle").textContent =
     scholar.research_title || "";
 
-  const detailsBox = document.getElementById("scholarModalDetails");
+  const detailsBox =
+    document.getElementById("scholarModalDetails");
 
   detailsBox.innerHTML = "";
 
-  const details = scholar.details || "No additional details available.";
+  const details =
+    scholar.details ||
+    "No additional details available.";
 
   details.split(/\r?\n/).forEach(line => {
+
     const p = document.createElement("p");
+
     p.textContent = line;
+
     detailsBox.appendChild(p);
   });
 
-  document.getElementById("scholarModal").style.display = "flex";
+  document.getElementById("scholarModal").style.display =
+    "flex";
 }
 
 
 function closeScholarDetails() {
 
-  document.getElementById("scholarModal").style.display = "none";
-
+  document.getElementById("scholarModal").style.display =
+    "none";
 }
 
 
-document.getElementById("scholarModalClose").addEventListener(
-  "click",
-  closeScholarDetails
-);
+document.getElementById("scholarModalClose")
+  .addEventListener(
+    "click",
+    closeScholarDetails
+  );
 
 
-document.getElementById("scholarModal").addEventListener(
-  "click",
-  function(event) {
+document.getElementById("scholarModal")
+  .addEventListener(
+    "click",
+    function(event) {
 
-    if (event.target === this) {
-      closeScholarDetails();
+      if (event.target === this) {
+        closeScholarDetails();
+      }
+
+    }
+  );
+
+
+/* =========================
+   INITIAL LOAD
+========================= */
+
+document.addEventListener(
+  "DOMContentLoaded",
+  function() {
+
+    if (typeof supabaseClient !== "undefined") {
+
+      loadPublications();
+
+      loadScholars();
+
+    } else {
+
+      console.error(
+        "Supabase client is not available."
+      );
+
     }
 
   }
 );
-
- 
-
-/* ---------------- LOAD PUBLICATIONS ---------------- */
-
-document.addEventListener("DOMContentLoaded", function () {
-
-  if (typeof supabaseClient !== "undefined") {
-    loadPublications();
-    loadScholars();
-  } else {
-    console.error("Supabase client is not available.");
-}
-});
-</script>
 
 
 <section id="notices" class="section alt">
