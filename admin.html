@@ -1,6 +1,4 @@
-from pathlib import Path
-
-html = r'''<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -127,7 +125,7 @@ async function load(table){
  else q=q.order("id",{ascending:false});
  const {data,error}=await q;
  if(error){$("msg-"+table).textContent="Error: "+error.message;return}
- if(table==="profiles" && data?.[0]) fillProfile(data[0]);
+ if(table==="profiles" && data?.[0]) { fillProfile(data[0]); $("form-profiles").dataset.id=data[0].id; }
  const box=$("records-"+table);
  if(!data?.length){box.innerHTML="<p>No records available.</p>";return}
  box.innerHTML=data.map(r=>{
@@ -191,9 +189,4 @@ $("logout").onclick=async()=>{await S.auth.signOut();location.reload()};
 })();
 </script>
 </body>
-</html>'''
-
-p=Path("/mnt/data/admin.html")
-p.write_text(html,encoding="utf-8")
-print(f"Created {p}")
-print(f"Size: {p.stat().st_size:,} bytes")
+</html>
