@@ -144,9 +144,13 @@ document.getElementById("logoutBtn").addEventListener("click", async function ()
   document.getElementById("noticeForm").style.display = "block";
 })
 
+document.getElementById("manageScholarsBtn").addEventListener("click", function () {
+  document.getElementById("scholarForm").style.display = "block";
+});
+
 document.getElementById("cancelScholarBtn").addEventListener("click", function () {
   document.getElementById("scholarForm").style.display = "none";
-}); 
+});
   document.getElementById("saveScholarBtn").addEventListener("click", async function () {
 
   const scholarName = document.getElementById("scholarName").value.trim();
@@ -155,6 +159,7 @@ document.getElementById("cancelScholarBtn").addEventListener("click", function (
   const scholarYear = document.getElementById("scholarYear").value;
   const scholarDetails = document.getElementById("scholarDetails").value.trim();
   const scholarMessage = document.getElementById("scholarMessage");
+
 
   if (!scholarName || !researchTitle || !scholarStatus || !scholarYear) {
     scholarMessage.textContent = "Please fill in the scholar name, research title, status and year.";
