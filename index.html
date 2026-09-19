@@ -110,6 +110,22 @@
     </section>
 
     <section id="scholars" class="section">
+      <!-- Scholar Details Modal -->
+<div id="scholarModal" class="scholar-modal" style="display:none;">
+  <div class="scholar-modal-content">
+
+    <button id="scholarModalClose"
+            class="scholar-modal-close"
+            type="button">&times;</button>
+
+    <h2 id="scholarModalName"></h2>
+
+    <p id="scholarModalTitle"></p>
+
+    <div id="scholarModalDetails"></div>
+
+  </div>
+</div>
       <div class="wrap">
         <div class="section-kicker">RESEARCH SCHOLARS</div>
         <h2>PhD Supervision</h2>
@@ -477,7 +493,45 @@ function showPublicationTab(tab, button) {
 }
 
 
-async function loadScholars() {
+async function loadScholars(async function loadScholars() {
+
+  const scholarsList = document.getElementById("scholarsList");
+
+  const { data: scholars, error } = await supabaseClient
+    .from("phd_scholars")
+    .select("*")
+    .order("year", { ascending: false });
+
+  if (error) {
+    console.error("Scholar loading error:", error);
+    scholarsList.innerHTML = "<p>Unable to load scholars.</p>";
+    return;
+  }
+
+  if (!scholars || scholars.length === 0) {
+    scholarsList.innerHTML = "<p>No scholars available.</p>";
+    return;
+  }
+
+  window.scholarData = scholars;
+
+  scholarsList.innerHTML = scholars.map((scholar, index) => `
+    <article class="card">
+      <span class="tag">${scholar.status || ""}</span>
+
+      <h3>${scholar.scholar_name || ""}</h3>
+
+      <p>${scholar.research_title || ""}</p>
+
+      <button
+        class="scholar-details-btn"
+        type="button"
+        onclick="showScholarDetails(${index})">
+        View Details →
+      </button>
+    </article>
+  `).join("");
+}) {
 
   const scholarsList = document.getElementById("scholarsList");
 
