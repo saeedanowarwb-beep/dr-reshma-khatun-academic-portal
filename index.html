@@ -493,7 +493,7 @@ function showPublicationTab(tab, button) {
 }
 
 
-async function loadScholars(async function loadScholars() {
+async function loadScholars() {
 
   const scholarsList = document.getElementById("scholarsList");
 
@@ -549,16 +549,59 @@ async function loadScholars(async function loadScholars() {
   if (!scholars || scholars.length === 0) {
     scholarsList.innerHTML = "<p>No scholars available.</p>";
     return;
-  }
+  }function showScholarDetails(index) {
 
-  scholarsList.innerHTML = scholars.map(scholar => `
-    <article class="card">
-      <span class="tag">${scholar.status || ""}</span>
-      <h3>${scholar.scholar_name || ""}</h3>
-      <p>${scholar.research_title || ""}</p>
-    </article>
-  `).join("");
+  const scholar = window.scholarData[index];
+
+  if (!scholar) return;
+
+  document.getElementById("scholarModalName").textContent =
+    scholar.scholar_name || "";
+
+  document.getElementById("scholarModalTitle").textContent =
+    scholar.research_title || "";
+
+  const detailsBox = document.getElementById("scholarModalDetails");
+
+  detailsBox.innerHTML = "";
+
+  const details = scholar.details || "No additional details available.";
+
+  details.split(/\r?\n/).forEach(line => {
+    const p = document.createElement("p");
+    p.textContent = line;
+    detailsBox.appendChild(p);
+  });
+
+  document.getElementById("scholarModal").style.display = "flex";
 }
+
+
+function closeScholarDetails() {
+
+  document.getElementById("scholarModal").style.display = "none";
+
+}
+
+
+document.getElementById("scholarModalClose").addEventListener(
+  "click",
+  closeScholarDetails
+);
+
+
+document.getElementById("scholarModal").addEventListener(
+  "click",
+  function(event) {
+
+    if (event.target === this) {
+      closeScholarDetails();
+    }
+
+  }
+);
+
+ 
 
 /* ---------------- LOAD PUBLICATIONS ---------------- */
 
