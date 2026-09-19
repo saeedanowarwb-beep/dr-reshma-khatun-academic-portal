@@ -51,3 +51,75 @@
     gap: 8px;
   }
 }
+/* Scholar Details Button */
+
+.scholar-details-btn {
+  margin-top: 14px;
+  padding: 9px 15px;
+  border: 1px solid #213b89;
+  border-radius: 6px;
+  background: #ffffff;
+  color: #213b89;
+  cursor: pointer;
+  font: inherit;
+}
+
+.scholar-details-btn:hover {
+  background: #213b89;
+  color: #ffffff;
+}
+
+
+/* Scholar Details Modal */
+
+.scholar-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+}
+
+.scholar-modal-content {
+  position: relative;
+  width: 100%;
+  max-width: 700px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 30px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+.scholar-modal-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  border: none;
+  background: transparent;
+  font-size: 30px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.scholar-modal-content h2 {
+  margin-top: 0;
+  padding-right: 35px;
+}
+
+.scholar-modal-content p {
+  line-height: 1.6;
+}
+
+#scholarModalTitle {
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+#scholarModalDetails p {
+  margin: 8px 0;
+}
