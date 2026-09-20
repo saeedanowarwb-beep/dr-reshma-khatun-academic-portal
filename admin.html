@@ -4,45 +4,41 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>Admin Dashboard | Dr. Reshma Khatun</title>
-
   <link rel="stylesheet" href="styles.css">
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
-
   <style>
     .admin-wrap{max-width:1200px;margin:auto;padding:30px 20px 70px}
     .login-box{max-width:430px;margin:70px auto;padding:30px;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
     .admin-toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;margin-bottom:24px}
-    .admin-toolbar .actions{margin:0}
     .admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
     .admin-card{padding:22px}
     .admin-panel{display:none;background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;margin-top:24px}
     .admin-panel.open{display:block}
-    .admin-panel h2{margin-top:0}
     .admin-form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
     .admin-form .full{grid-column:1/-1}
-    .admin-form input,.admin-form textarea,.admin-form select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;box-sizing:border-box;background:#fff}
+    .admin-form input,.admin-form textarea{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;box-sizing:border-box;background:#fff}
     .admin-form textarea{min-height:110px;resize:vertical}
     .admin-form label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:5px}
-    .admin-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+    .admin-actions,.admin-record-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
     .admin-message{min-height:22px;margin:8px 0 0}
     .admin-record{padding:18px 0;border-top:1px solid var(--line)}
     .admin-record h3{margin:0 0 7px}
     .admin-record p{margin:4px 0;color:var(--muted);white-space:pre-line}
-    .admin-record-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
-    .admin-btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 13px;border-radius:10px;font:inherit;font-weight:700;cursor:pointer}
+    .admin-btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 13px;border-radius:10px;font:inherit;font-weight:700;cursor:pointer;text-decoration:none}
     .admin-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
     .admin-btn.danger{border-color:#c63c32;color:#a92820}
+    .admin-btn.secondary{background:#f5f7fb}
     .admin-btn:hover{filter:brightness(.97)}
     .admin-status{margin:10px 0 18px;padding:12px 15px;border-radius:12px;background:#f7f9ff;border:1px solid #dbe3ff}
+    .edit-banner{display:none;margin-bottom:16px;padding:12px 15px;border-radius:12px;background:#fff8e8;border:1px solid #ead69a}
+    .edit-banner.show{display:block}
     .hidden{display:none!important}
     .muted{color:var(--muted)}
     @media(max-width:900px){.admin-grid{grid-template-columns:repeat(2,1fr)}}
     @media(max-width:650px){.admin-grid,.admin-form{grid-template-columns:1fr}.admin-form .full{grid-column:auto}}
   </style>
 </head>
-
 <body class="admin-body">
 
 <header class="topbar">
@@ -57,42 +53,34 @@
   <div class="section-kicker">SECURE ACCESS</div>
   <h1>Admin Login</h1>
   <p class="muted">Sign in with an authorized administrator account.</p>
-
   <label for="loginEmail">Email</label>
   <input id="loginEmail" type="email" autocomplete="username"
-         style="width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;box-sizing:border-box;margin:6px 0 12px">
-
+    style="width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;box-sizing:border-box;margin:6px 0 12px">
   <label for="loginPassword">Password</label>
   <input id="loginPassword" type="password" autocomplete="current-password"
-         style="width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;box-sizing:border-box;margin:6px 0 12px">
-
+    style="width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;box-sizing:border-box;margin:6px 0 12px">
   <button id="loginBtn" class="admin-btn primary" type="button">Login</button>
   <p id="loginMessage" class="admin-message"></p>
 </section>
 
 <main id="adminApp" class="hidden">
   <div class="admin-wrap">
-
     <div class="admin-toolbar">
       <div>
         <div class="section-kicker">ADMINISTRATION</div>
         <h1>Manage Academic Portal</h1>
         <p id="signedInAs" class="muted"></p>
       </div>
-
-      <div class="actions">
-        <a class="admin-btn" href="index.html">View Website</a>
-      </div>
+      <a class="admin-btn" href="index.html">View Website</a>
     </div>
 
     <div class="admin-status">
       <strong>Supabase-connected admin panel.</strong>
-      Use the management cards below to add or delete portal records.
+      Add new records, edit existing records, or delete records.
     </div>
 
     <section class="admin-grid" id="adminCards"></section>
     <section id="adminPanels"></section>
-
   </div>
 </main>
 
@@ -115,9 +103,9 @@
 
   const configs = {
     notices: {
-      title: "Notices",
-      description: "Add and remove published academic notices.",
-      fields: [
+      title:"Notices",
+      description:"Add, edit and remove published academic notices.",
+      fields:[
         ["title","Title","text",true],
         ["description","Description","textarea",true],
         ["notice_date","Notice Date","date",true],
@@ -126,11 +114,10 @@
         ["is_published","Publish","checkbox",false]
       ]
     },
-
     phd_scholars: {
-      title: "PhD Scholars",
-      description: "Add and remove research scholars.",
-      fields: [
+      title:"PhD Scholars",
+      description:"Add, edit and remove research scholars.",
+      fields:[
         ["scholar_name","Scholar Name","text",true],
         ["research_title","Research Title","textarea",true],
         ["status","Status","text",true],
@@ -138,11 +125,10 @@
         ["details","Full Details","textarea",false]
       ]
     },
-
     books: {
-      title: "Books",
-      description: "Add and remove books.",
-      fields: [
+      title:"Books",
+      description:"Add, edit and remove books.",
+      fields:[
         ["title","Title","textarea",true],
         ["authors","Authors","text",false],
         ["publisher","Publisher","text",false],
@@ -151,11 +137,10 @@
         ["sort_order","Sort Order","number",false]
       ]
     },
-
     book_chapters: {
-      title: "Book Chapters",
-      description: "Add and remove book chapters.",
-      fields: [
+      title:"Book Chapters",
+      description:"Add, edit and remove book chapters.",
+      fields:[
         ["title","Chapter Title","textarea",true],
         ["authors","Authors","text",false],
         ["book_title","Book Title","text",false],
@@ -168,11 +153,10 @@
         ["sort_order","Sort Order","number",false]
       ]
     },
-
     journal_papers: {
-      title: "Journal Papers",
-      description: "Add and remove journal papers.",
-      fields: [
+      title:"Journal Papers",
+      description:"Add, edit and remove journal papers.",
+      fields:[
         ["title","Title","textarea",true],
         ["authors","Authors","text",false],
         ["journal","Journal","text",false],
@@ -186,11 +170,10 @@
         ["sort_order","Sort Order","number",false]
       ]
     },
-
     news: {
-      title: "News",
-      description: "Add and remove news and updates.",
-      fields: [
+      title:"News",
+      description:"Add, edit and remove news and updates.",
+      fields:[
         ["title","Title","text",true],
         ["summary","Summary","textarea",false],
         ["content","Content","textarea",false],
@@ -198,22 +181,20 @@
         ["image_url","Image URL","url",false]
       ]
     },
-
     resources: {
-      title: "Resources",
-      description: "Add and remove academic resources.",
-      fields: [
+      title:"Resources",
+      description:"Add, edit and remove academic resources.",
+      fields:[
         ["title","Title","text",true],
         ["description","Description","textarea",false],
         ["category","Category","text",false],
         ["file_url","File / Resource URL","url",true]
       ]
     },
-
     routine: {
-      title: "Routine",
-      description: "Add and remove routine entries.",
-      fields: [
+      title:"Routine",
+      description:"Add, edit and remove routine entries.",
+      fields:[
         ["day_name","Day","text",true],
         ["class_time","Class Time","text",true],
         ["course_name","Course Name","text",true],
@@ -224,85 +205,146 @@
     }
   };
 
+  const recordCache = {};
+  const editingId = {};
   const cards = $("adminCards");
   const panels = $("adminPanels");
 
   Object.entries(configs).forEach(([table, config]) => {
+    recordCache[table] = [];
+    editingId[table] = null;
+
     cards.insertAdjacentHTML("beforeend", `
       <article class="card admin-card">
         <h3>${esc(config.title)}</h3>
         <p>${esc(config.description)}</p>
-        <button class="admin-btn primary" type="button" data-open="${table}">
+        <button class="admin-btn primary" type="button" data-open="${esc(table)}">
           Manage
         </button>
       </article>
     `);
 
     panels.insertAdjacentHTML("beforeend", `
-      <section id="panel-${table}" class="admin-panel">
+      <section id="panel-${esc(table)}" class="admin-panel">
         <div class="admin-toolbar">
           <div>
             <h2>${esc(config.title)}</h2>
             <p class="muted">${esc(config.description)}</p>
           </div>
-          <button class="admin-btn" type="button" data-close="${table}">
+          <button class="admin-btn" type="button" data-close="${esc(table)}">
             Close
           </button>
         </div>
 
-        <form id="form-${table}" class="admin-form"></form>
-        <p id="msg-${table}" class="admin-message"></p>
-        <div id="records-${table}"></div>
+        <div id="edit-banner-${esc(table)}" class="edit-banner">
+          <strong>Edit mode:</strong>
+          You are editing an existing record. Click <strong>Update Record</strong>
+          to save your changes.
+        </div>
+
+        <form id="form-${esc(table)}" class="admin-form"></form>
+        <p id="msg-${esc(table)}" class="admin-message"></p>
+        <div id="records-${esc(table)}"></div>
       </section>
     `);
 
     const form = $(`form-${table}`);
 
     config.fields.forEach(([key,label,type,required]) => {
-      const full = type === "textarea" ? "full" : "";
       const req = required ? "required" : "";
-      let control = "";
 
       if (type === "checkbox") {
-        control = `
-          <label class="full" style="display:flex;align-items:center;gap:8px;">
-            <input id="${table}-${key}" type="checkbox">
+        form.insertAdjacentHTML("beforeend", `
+          <label class="full" style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+            <input id="${esc(table)}-${esc(key)}" type="checkbox">
             <span>${esc(label)}</span>
-          </label>`;
+          </label>
+        `);
       } else if (type === "textarea") {
-        control = `
-          <div class="${full}">
-            <label for="${table}-${key}">${esc(label)}</label>
-            <textarea id="${table}-${key}" ${req}></textarea>
-          </div>`;
+        form.insertAdjacentHTML("beforeend", `
+          <div class="full">
+            <label for="${esc(table)}-${esc(key)}">${esc(label)}</label>
+            <textarea id="${esc(table)}-${esc(key)}" ${req}></textarea>
+          </div>
+        `);
       } else {
-        control = `
+        form.insertAdjacentHTML("beforeend", `
           <div>
-            <label for="${table}-${key}">${esc(label)}</label>
-            <input id="${table}-${key}" type="${type}" ${req}>
-          </div>`;
+            <label for="${esc(table)}-${esc(key)}">${esc(label)}</label>
+            <input id="${esc(table)}-${esc(key)}" type="${esc(type)}" ${req}>
+          </div>
+        `);
       }
-
-      form.insertAdjacentHTML("beforeend", control);
     });
 
     form.insertAdjacentHTML("beforeend", `
       <div class="admin-actions full">
-        <button class="admin-btn primary" type="submit">Save Record</button>
+        <button id="submit-${esc(table)}" class="admin-btn primary" type="submit">
+          Save Record
+        </button>
+        <button id="cancel-edit-${esc(table)}" class="admin-btn secondary hidden" type="button">
+          Cancel Edit
+        </button>
         <button class="admin-btn" type="reset">Clear</button>
       </div>
     `);
   });
 
-  function valueOf(table, key, type) {
-    const el = $(`${table}-${key}`);
-    if (type === "checkbox") return el.checked;
+  function readValue(table, key, type) {
+    const element = $(`${table}-${key}`);
+    if (!element) return null;
+    if (type === "checkbox") return element.checked;
 
-    const value = el.value.trim();
-    if (!value) return null;
+    const value = element.value.trim();
+    if (value === "") return null;
 
-    if (type === "number") return Number(value);
+    if (type === "number") {
+      const numberValue = Number(value);
+      return Number.isFinite(numberValue) ? numberValue : null;
+    }
+
     return value;
+  }
+
+  function populateForm(table, record) {
+    configs[table].fields.forEach(([key,,type]) => {
+      const element = $(`${table}-${key}`);
+      if (!element) return;
+
+      const value = record[key];
+
+      if (type === "checkbox") {
+        element.checked = Boolean(value);
+      } else if (type === "date" && value) {
+        element.value = String(value).slice(0,10);
+      } else {
+        element.value =
+          value === null || value === undefined ? "" : String(value);
+      }
+    });
+  }
+
+  function resetToAddMode(table) {
+    editingId[table] = null;
+    $(`form-${table}`).reset();
+    $(`submit-${table}`).textContent = "Save Record";
+    $(`cancel-edit-${table}`).classList.add("hidden");
+    $(`edit-banner-${table}`).classList.remove("show");
+    $(`msg-${table}`).textContent = "";
+  }
+
+  function startEdit(table, record) {
+    editingId[table] = record.id;
+    populateForm(table, record);
+    $(`submit-${table}`).textContent = "Update Record";
+    $(`cancel-edit-${table}`).classList.remove("hidden");
+    $(`edit-banner-${table}`).classList.add("show");
+    $(`msg-${table}`).textContent =
+      "Editing record ID " + record.id + ".";
+    $(`panel-${table}`).scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
   }
 
   async function isAdmin(userId) {
@@ -363,16 +405,17 @@
       return;
     }
 
+    recordCache[table] = data || [];
     msg.textContent = "";
 
-    if (!data || !data.length) {
+    if (!data || data.length === 0) {
       box.innerHTML = '<p class="muted">No records available.</p>';
       return;
     }
 
-    box.innerHTML = data.map((row) => {
-      const config = configs[table];
+    const config = configs[table];
 
+    box.innerHTML = data.map((row) => {
       const heading =
         row.title ||
         row.scholar_name ||
@@ -405,18 +448,38 @@
         <article class="admin-record">
           <h3>${esc(heading)}</h3>
           ${details}
-
           <div class="admin-record-actions">
-            <button
-              class="admin-btn danger"
-              type="button"
-              data-delete="${table}"
-              data-id="${esc(row.id)}">
+            <button class="admin-btn primary" type="button"
+              data-edit="${esc(table)}" data-id="${esc(row.id)}">
+              Edit
+            </button>
+
+            <button class="admin-btn danger" type="button"
+              data-delete="${esc(table)}" data-id="${esc(row.id)}">
               Delete
             </button>
           </div>
-        </article>`;
+        </article>
+      `;
     }).join("");
+
+    box.querySelectorAll("[data-edit]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const tableName = button.dataset.edit;
+        const recordId = button.dataset.id;
+
+        const record = recordCache[tableName].find(
+          (item) => String(item.id) === String(recordId)
+        );
+
+        if (!record) {
+          alert("Record could not be found.");
+          return;
+        }
+
+        startEdit(tableName, record);
+      });
+    });
 
     box.querySelectorAll("[data-delete]").forEach((button) => {
       button.addEventListener("click", async () => {
@@ -437,18 +500,32 @@
           return;
         }
 
-        loadRecords(tableName);
+        if (
+          editingId[tableName] !== null &&
+          String(editingId[tableName]) === String(recordId)
+        ) {
+          resetToAddMode(tableName);
+        }
+
+        await loadRecords(tableName);
       });
     });
   }
 
   function openPanel(table) {
-    document.querySelectorAll(".admin-panel")
-      .forEach((panel) => panel.classList.remove("open"));
+    document.querySelectorAll(".admin-panel").forEach((panel) => {
+      panel.classList.remove("open");
+    });
+
+    resetToAddMode(table);
 
     const panel = $(`panel-${table}`);
     panel.classList.add("open");
-    panel.scrollIntoView({behavior:"smooth",block:"start"});
+
+    panel.scrollIntoView({
+      behavior:"smooth",
+      block:"start"
+    });
 
     loadRecords(table);
   }
@@ -461,7 +538,15 @@
 
   document.querySelectorAll("[data-close]").forEach((button) => {
     button.addEventListener("click", () => {
-      $(`panel-${button.dataset.close}`).classList.remove("open");
+      const table = button.dataset.close;
+      resetToAddMode(table);
+      $(`panel-${table}`).classList.remove("open");
+    });
+  });
+
+  Object.keys(configs).forEach((table) => {
+    $(`cancel-edit-${table}`).addEventListener("click", () => {
+      resetToAddMode(table);
     });
   });
 
@@ -470,13 +555,33 @@
       event.preventDefault();
 
       const msg = $(`msg-${table}`);
-      msg.textContent = "Saving...";
-
+      const currentId = editingId[table];
       const payload = {};
 
       config.fields.forEach(([key,,type]) => {
-        payload[key] = valueOf(table, key, type);
+        payload[key] = readValue(table, key, type);
       });
+
+      if (currentId !== null) {
+        msg.textContent = "Updating record...";
+
+        const { error } = await S
+          .from(table)
+          .update(payload)
+          .eq("id", currentId);
+
+        if (error) {
+          msg.textContent = "Error: " + error.message;
+          return;
+        }
+
+        resetToAddMode(table);
+        msg.textContent = "Record updated successfully.";
+        await loadRecords(table);
+        return;
+      }
+
+      msg.textContent = "Saving...";
 
       const { error } = await S
         .from(table)
@@ -487,7 +592,7 @@
         return;
       }
 
-      msg.textContent = "Saved successfully.";
+      msg.textContent = "Record saved successfully.";
       event.target.reset();
       await loadRecords(table);
     });
