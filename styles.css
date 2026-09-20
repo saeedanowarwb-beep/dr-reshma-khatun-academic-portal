@@ -123,3 +123,68 @@
 #scholarModalDetails p {
   margin: 8px 0;
 }
+/* ================= SCHOLAR DETAILS MODAL FIX ================= */
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.55);
+  padding: 24px;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.show {
+  display: flex;
+}
+
+.modal-box {
+  width: min(760px, 100%);
+  max-height: 85vh;
+  overflow-y: auto;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 32px;
+  position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.20);
+}
+
+.modal-close {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  width: 38px;
+  height: 38px;
+  border: none;
+  border-radius: 50%;
+  background: #f1f4f8;
+  color: #1f2937;
+  font-size: 26px;
+  line-height: 38px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.modal-close:hover {
+  background: #e5eaf0;
+}
+
+.modal-content {
+  margin-top: 18px;
+  white-space: pre-line;
+  line-height: 1.8;
+  color: #4b5563;
+}
+
+@media (max-width: 700px) {
+  .modal {
+    padding: 14px;
+  }
+
+  .modal-box {
+    padding: 24px 20px;
+    max-height: 90vh;
+  }
+}
