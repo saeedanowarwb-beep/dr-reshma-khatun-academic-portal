@@ -1,1097 +1,424 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Academic portal of Dr. Reshma Khatun, Assistant Professor, Department of Education, Aliah University.">
   <title>Dr. Reshma Khatun | Academic Portal</title>
-  <meta
-    name="description"
-    content="Official academic profile and portal of Dr. Reshma Khatun."
-  >
-
-  <!-- Supabase -->
+  <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
-  <!-- Existing Supabase configuration -->
   <script src="supabase-config.js"></script>
-
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      line-height: 1.6;
-      background: #f6f8fb;
-      color: #1f2937;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    .container {
-      width: min(1120px, 92%);
-      margin: auto;
-    }
-
-    /* Navbar */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      background: #ffffff;
-      border-bottom: 1px solid #e5e7eb;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .nav {
-      min-height: 70px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .brand {
-      font-size: 20px;
-      font-weight: 700;
-      color: #17365d;
-      white-space: nowrap;
-    }
-
-    .nav-links {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-end;
-      gap: 16px;
-    }
-
-    .nav-links a {
-      font-size: 14px;
-      color: #374151;
-      padding: 6px 2px;
-    }
-
-    .nav-links a:hover {
-      color: #17365d;
-    }
-
-    /* Hero */
-    .hero {
-      background: linear-gradient(135deg, #17365d, #2f5f95);
-      color: white;
-      padding: 80px 0;
-    }
-
-    .hero-content {
-      display: grid;
-      grid-template-columns: 1fr 260px;
-      gap: 45px;
-      align-items: center;
-    }
-
-    .hero h1 {
-      font-size: clamp(32px, 5vw, 52px);
-      margin-bottom: 12px;
-    }
-
-    .hero h2 {
-      font-size: 22px;
-      font-weight: 500;
-      margin-bottom: 15px;
-      opacity: 0.95;
-    }
-
-    .hero p {
-      max-width: 720px;
-      opacity: 0.92;
-    }
-
-    .profile-image {
-      width: 240px;
-      height: 240px;
-      object-fit: cover;
-      border-radius: 50%;
-      border: 6px solid rgba(255,255,255,0.9);
-      background: #ffffff;
-      margin: auto;
-    }
-
-    /* Sections */
-    section {
-      padding: 65px 0;
-    }
-
-    .section-title {
-      text-align: center;
-      margin-bottom: 35px;
-    }
-
-    .section-title h2 {
-      font-size: 30px;
-      color: #17365d;
-      margin-bottom: 8px;
-    }
-
-    .section-title p {
-      color: #6b7280;
-    }
-
-    .card {
-      background: #ffffff;
-      border: 1px solid #e5e7eb;
-      border-radius: 14px;
-      padding: 25px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.04);
-    }
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 25px;
-    }
-
-    .info-row {
-      padding: 10px 0;
-      border-bottom: 1px solid #edf0f3;
-    }
-
-    .info-row:last-child {
-      border-bottom: none;
-    }
-
-    .info-row strong {
-      display: inline-block;
-      min-width: 130px;
-      color: #17365d;
-    }
-
-    /* Dynamic grids */
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 22px;
-    }
-
-    .item-card h3 {
-      color: #17365d;
-      margin-bottom: 8px;
-      font-size: 18px;
-    }
-
-    .item-card p {
-      color: #4b5563;
-      font-size: 14px;
-    }
-
-    .meta {
-      margin-top: 12px;
-      font-size: 13px;
-      color: #6b7280;
-    }
-
-    .badge {
-      display: inline-block;
-      margin-top: 12px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: #eef4fb;
-      color: #17365d;
-      font-size: 12px;
-      font-weight: 600;
-    }
-
-    .details-btn {
-      margin-top: 15px;
-      border: none;
-      border-radius: 8px;
-      padding: 9px 14px;
-      background: #17365d;
-      color: white;
-      cursor: pointer;
-      font-size: 13px;
-    }
-
-    .details-btn:hover {
-      background: #0f2744;
-    }
-
-    /* Loading / empty / error */
-    .status-box {
-      text-align: center;
-      padding: 25px;
-      color: #6b7280;
-      grid-column: 1 / -1;
-    }
-
-    .error-box {
-      color: #b91c1c;
-    }
-
-    /* Footer */
-    footer {
-      background: #132a46;
-      color: #dbe4ee;
-      padding: 30px 0;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    /* Modal */
-    .modal {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 3000;
-      background: rgba(0,0,0,0.55);
-      padding: 20px;
-      overflow-y: auto;
-    }
-
-    .modal.show {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .modal-box {
-      width: min(760px, 100%);
-      max-height: 90vh;
-      overflow-y: auto;
-      background: white;
-      border-radius: 16px;
-      padding: 30px;
-      position: relative;
-    }
-
-    .modal-close {
-      position: absolute;
-      top: 12px;
-      right: 18px;
-      border: none;
-      background: transparent;
-      font-size: 28px;
-      cursor: pointer;
-      color: #6b7280;
-    }
-
-    .modal-box h2 {
-      color: #17365d;
-      margin-bottom: 15px;
-      padding-right: 30px;
-    }
-
-    .modal-content {
-      white-space: pre-line;
-      color: #374151;
-    }
-
-    /* Responsive */
-    @media (max-width: 850px) {
-      .hero-content {
-        grid-template-columns: 1fr;
-        text-align: center;
-      }
-
-      .hero p {
-        margin: auto;
-      }
-
-      .about-grid,
-      .grid {
-        grid-template-columns: 1fr;
-      }
-
-      .nav {
-        flex-direction: column;
-        padding: 15px 0;
-      }
-
-      .nav-links {
-        justify-content: center;
-      }
-    }
-  </style>
 </head>
-
 <body>
-
-  <!-- NAVIGATION -->
-  <header>
-    <div class="container nav">
-      <div class="brand">Dr. Reshma Khatun</div>
-
-      <nav class="nav-links">
+  <header class="topbar">
+    <div class="wrap nav-wrap">
+      <a class="brand" href="#home">Dr. Reshma Khatun</a>
+      <nav aria-label="Main navigation">
         <a href="#about">About</a>
         <a href="#education">Education</a>
         <a href="#research">Research</a>
         <a href="#scholars">Scholars</a>
         <a href="#publications">Publications</a>
-        <a href="#notices">Notices</a>
-        <a href="#news">News</a>
+        <a href="#activities">Activities</a>
         <a href="#contact">Contact</a>
-        <a href="admin.html">Admin</a>
+        <a class="admin-link" href="admin.html">Admin</a>
       </nav>
     </div>
   </header>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="container hero-content">
-
-      <div>
-        <h1>Dr. Reshma Khatun</h1>
-        <h2>Academic Portal</h2>
-        <p>
-          Department of Education, Aliah University.
-          This portal presents academic information, research work,
-          publications, scholars, notices and academic activities.
-        </p>
-      </div>
-
-      <div>
-        <img
-          class="profile-image"
-          src="assets/profile.jpg"
-          alt="Dr. Reshma Khatun"
-          onerror="this.style.display='none';"
-        >
-      </div>
-
-    </div>
-  </section>
-
-  <!-- ABOUT -->
-  <section id="about">
-    <div class="container">
-
-      <div class="section-title">
-        <h2>About</h2>
-        <p>Academic profile</p>
-      </div>
-
-      <div class="about-grid">
-
-        <div class="card">
-          <div class="info-row">
-            <strong>Name:</strong>
-            <span>Dr. Reshma Khatun</span>
+  <main>
+    <section id="home" class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow">ACADEMIC PORTAL • DEPARTMENT OF EDUCATION</div>
+          <h1>Dr. Reshma Khatun</h1>
+          <p class="role">Assistant Professor · Department of Education · Aliah University</p>
+          <p class="hero-copy">Academic profile, research, publications, PhD supervision, invited talks, academic responsibilities and professional activities.</p>
+          <div class="actions">
+            <a class="btn primary" href="#about">Explore Profile</a>
+            <a class="btn ghost" href="mailto:dr.reshmakhatun@aliah.ac.in">Email</a>
           </div>
-
-          <div class="info-row">
-            <strong>Designation:</strong>
-            <span>Faculty Member</span>
-          </div>
-
-          <div class="info-row">
-            <strong>Department:</strong>
-            <span>Education</span>
-          </div>
-
-          <div class="info-row">
-            <strong>Institution:</strong>
-            <span>Aliah University</span>
+          <div class="stats">
+            <div><strong>11</strong><span>Books</span></div>
+            <div><strong>18+</strong><span>Journal papers</span></div>
+            <div><strong>4</strong><span>PhD scholars</span></div>
+            <div><strong>49</strong><span>Seminar activities</span></div>
           </div>
         </div>
-
-        <div class="card">
-          <h3>Biography</h3>
-          <p style="margin-top:12px;">
-            Academic and research information of Dr. Reshma Khatun
-            is presented through this academic portal.
-          </p>
+        <div class="portrait-card">
+          <img src="assets/profile.jpg" alt="Dr. Reshma Khatun" class="portrait">
+          <div class="portrait-caption"><strong>Dr. Reshma Khatun</strong><span>Assistant Professor, Department of Education</span></div>
         </div>
-
       </div>
-    </div>
-  </section>
+    </section>
 
-  <!-- EDUCATION -->
-  <section id="education">
-    <div class="container">
-
-      <div class="section-title">
-        <h2>Education</h2>
-        <p>Academic qualifications</p>
-      </div>
-
-      <div class="card">
-        <p>
-          Educational qualifications and academic background will be
-          displayed here.
-        </p>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- RESEARCH -->
-  <section id="research">
-    <div class="container">
-
-      <div class="section-title">
-        <h2>Research</h2>
-        <p>Research interests and academic work</p>
-      </div>
-
-      <div class="grid">
-
-        <div class="card item-card">
-          <h3>Research Areas</h3>
-          <p>
-            Education, learning, teaching, educational psychology
-            and related areas.
-          </p>
+    <section id="about" class="section alt">
+      <div class="wrap two-col">
+        <div>
+          <div class="section-kicker">PROFILE</div>
+          <h2>About</h2>
+          <p>Dr. Reshma Khatun is an Assistant Professor in the Department of Education, Aliah University, Kolkata. Her academic and research interests span teacher education, higher education, women education, minority education, gender studies, pedagogy of teaching English and AI in Education.</p>
+          <div class="info-list">
+            <div><span>University</span><strong>Aliah University</strong></div>
+            <div><span>Campus</span><strong>Park Circus Campus, Kolkata</strong></div>
+            <div><span>Email</span><strong>dr.reshmakhatun@aliah.ac.in</strong></div>
+          </div>
         </div>
-
-        <div class="card item-card">
-          <h3>Supervision</h3>
-          <p>
-            PhD scholars and research activities are presented
-            through the Scholars section.
-          </p>
+        <div class="feature-card">
+          <h3>Research &amp; Professional Focus</h3>
+          <ul>
+            <li>Teacher Education</li><li>Higher Education</li><li>Women Education</li><li>Minority Education</li><li>Gender Studies</li><li>Pedagogy of Teaching English</li><li>AI in Education</li>
+          </ul>
         </div>
+      </div>
+    </section>
 
-        <div class="card item-card">
-          <h3>Academic Activities</h3>
-          <p>
-            Conferences, seminars, invited talks and other
-            academic activities can be presented here.
-          </p>
+    <section id="education" class="section">
+      <div class="wrap">
+        <div class="section-kicker">ACADEMIC BACKGROUND</div>
+        <h2>Education &amp; Teaching Experience</h2>
+        <div class="timeline">
+          <div class="timeline-item"><span>2018</span><div><h3>Ph.D. in Education</h3><p>Visva-Bharati University</p></div></div>
+          <div class="timeline-item"><span>2014</span><div><h3>M.A. in Education</h3><p>I.G.N.O.U</p></div></div>
+          <div class="timeline-item"><span>2013</span><div><h3>M.Ed.</h3><p>Harkamaya College of Education (S.U)</p></div></div>
+          <div class="timeline-item"><span>2012</span><div><h3>B.Ed.</h3><p>Harkamaya College of Education (S.U)</p></div></div>
+          <div class="timeline-item"><span>2011</span><div><h3>M.A. in English</h3><p>D.A.V. College Kanpur (Chhatrapati Shahu Ji Maharaj University)</p></div></div>
+          <div class="timeline-item"><span>2009</span><div><h3>B.A. (Honours) in English</h3><p>Gyan Jyoti College (N.B.U)</p></div></div>
         </div>
-
+        <div class="experience-grid">
+          <article><h3>Holy Child B.Ed College</h3><p>Assistant Professor · 1 Nov–30 Jun, 2014</p></article>
+          <article><h3>Pragati College of Education</h3><p>Assistant Professor · 1 Jul 2014–4 Sep 2017</p></article>
+          <article><h3>Aliah University</h3><p>Assistant Professor · 5 Sep 2017–Present</p></article>
+        </div>
       </div>
+    </section>
 
-    </div>
-  </section>
-
-  <!-- SCHOLARS -->
-  <section id="scholars">
-    <div class="container">
-
-      <div class="section-title">
-        <h2>PhD Scholars</h2>
-        <p>Research scholars under supervision</p>
+    <section id="research" class="section alt">
+      <div class="wrap">
+        <div class="section-kicker">RESEARCH</div>
+        <h2>Research, Supervision &amp; Academic Leadership</h2>
+        <div class="cards three">
+          <article class="card"><h3>PhD Supervision</h3><p><strong>2 ongoing</strong>, <strong>1 awarded</strong>, <strong>1 final submission</strong>.</p><a href="#scholars">View scholars →</a></article>
+          <article class="card"><h3>Invited Talks</h3><p>Lectures and expert contributions on NEP 2020, gender, women empowerment, Begum Rokeya and related themes.</p><a href="#activities">View activities →</a></article>
+          <article class="card"><h3>Academic Responsibilities</h3><p>Convenor, joint convenor, editor, external BoS member, paper setter, evaluator, moderator and research-tool validation roles.</p><a href="#responsibilities">View responsibilities →</a></article>
+        </div>
       </div>
+    </section>
 
-      <div id="scholarsGrid" class="grid">
-        <div class="status-box">Loading scholars...</div>
+    <section id="scholars" class="section">
+      <div class="wrap">
+        <div class="section-kicker">RESEARCH SCHOLARS</div>
+        <h2>PhD Supervision</h2>
+        <div id="scholars-list" class="cards two">
+          <article class="card"><p>Loading scholars...</p></article>
+        </div>
       </div>
+    </section>
 
-    </div>
-  </section>
-
-  <!-- PUBLICATIONS -->
-  <section id="publications">
-    <div class="container">
-
-      <div class="section-title">
+    <section id="publications" class="section alt">
+      <div class="wrap">
+        <div class="section-kicker">PUBLICATIONS</div>
         <h2>Publications</h2>
-        <p>Books, book chapters and journal papers</p>
+        <div class="publication-tabs" role="tablist">
+          <button class="pub-tab active" type="button" data-tab="all">All Publications</button>
+          <button class="pub-tab" type="button" data-tab="books">Books</button>
+          <button class="pub-tab" type="button" data-tab="chapters">Book Chapters</button>
+          <button class="pub-tab" type="button" data-tab="journals">Journal Papers</button>
+        </div>
+        <div id="pub-all" class="publication-panel active">
+          <h3>All Publications</h3>
+          <div id="all-publications-list" class="publication-list"><p>Loading publications...</p></div>
+        </div>
+        <div id="pub-books" class="publication-panel">
+          <h3>Books</h3>
+          <div id="books-list" class="publication-list"><p>Loading books...</p></div>
+        </div>
+        <div id="pub-chapters" class="publication-panel">
+          <h3>Book Chapters</h3>
+          <div id="chapters-list" class="publication-list"><p>Loading book chapters...</p></div>
+        </div>
+        <div id="pub-journals" class="publication-panel">
+          <h3>Journal Papers</h3>
+          <div id="journals-list" class="publication-list"><p>Loading journal papers...</p></div>
+        </div>
       </div>
+    </section>
 
-      <div id="publicationsGrid" class="grid">
-        <div class="status-box">Loading publications...</div>
+    <section id="notices" class="section">
+      <div class="wrap">
+        <div class="section-kicker">NOTICE BOARD</div>
+        <h2>Notices</h2>
+        <div id="notices-list" class="publication-list"><p>Loading notices...</p></div>
       </div>
+    </section>
 
-    </div>
-  </section>
-
-  <!-- NOTICES -->
-  <section id="notices">
-    <div class="container">
-
-      <div class="section-title">
-        <h2>Notice Board</h2>
-        <p>Latest academic notices</p>
+    <section id="news" class="section alt">
+      <div class="wrap">
+        <div class="section-kicker">NEWS &amp; UPDATES</div>
+        <h2>News &amp; Updates</h2>
+        <div id="news-list" class="cards three"><article class="card"><p>Loading news...</p></article></div>
       </div>
+    </section>
 
-      <div id="noticesGrid" class="grid">
-        <div class="status-box">Loading notices...</div>
+    <section id="activities" class="section">
+      <div class="wrap">
+        <div class="section-kicker">PROFESSIONAL ACTIVITIES</div>
+        <h2>Awards, Courses &amp; Activities</h2>
+        <div class="cards three">
+          <article class="card">
+            <h3>Awards</h3>
+            <ul><li>Global Teacher Award 2023</li><li>Best Oral Presentation Award 2024</li><li>Best Innovative Academician 2024</li><li>Academic Excellence Award 2025</li><li>Best Oral Presentation Award 2025</li></ul>
+          </article>
+          <article class="card">
+            <h3>Recent Courses</h3>
+            <ul><li>Pedagogy in Pre-Service Teacher Education (2023)</li><li>UGC Refresher Course on Human Rights (2022)</li><li>UGC Faculty Induction Programme (2021)</li><li>Teacher Education Refresher Course (2019)</li></ul>
+          </article>
+          <article class="card" id="responsibilities">
+            <h3>Selected Responsibilities</h3>
+            <ul><li>Convenor, national/international academic events</li><li>Editor, UGC CARE listed journal</li><li>External Board of Studies member</li><li>Question Paper Setter / Evaluator / Moderator</li><li>Research-tool content validation expert</li></ul>
+          </article>
+        </div>
       </div>
+    </section>
 
-    </div>
-  </section>
-
-  <!-- NEWS -->
-  <section id="news">
-    <div class="container">
-
-      <div class="section-title">
-        <h2>News & Updates</h2>
-        <p>Latest academic updates</p>
+    <section id="contact" class="section alt contact-section">
+      <div class="wrap two-col">
+        <div>
+          <div class="section-kicker">CONTACT</div>
+          <h2>Get in Touch</h2>
+          <p>Department of Education, Aliah University, Park Circus Campus, Kolkata – 700014, West Bengal, India.</p>
+        </div>
+        <div class="contact-card">
+          <p><strong>Email</strong><br><a href="mailto:dr.reshmakhatun@aliah.ac.in">dr.reshmakhatun@aliah.ac.in</a></p>
+          <p><strong>Public academic portal</strong><br>Academic information is managed through the Admin dashboard.</p>
+        </div>
       </div>
+    </section>
+  </main>
 
-      <div id="newsGrid" class="grid">
-        <div class="status-box">Loading news...</div>
-      </div>
+  <footer><div class="wrap">© Dr. Reshma Khatun · Department of Education · Aliah University</div></footer>
 
-    </div>
-  </section>
-
-  <!-- CONTACT -->
-  <section id="contact">
-    <div class="container">
-
-      <div class="section-title">
-        <h2>Contact</h2>
-        <p>Academic contact information</p>
-      </div>
-
-      <div class="card">
-        <p>
-          For academic communication, please use the official
-          institutional contact details.
-        </p>
-      </div>
-
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer>
-    <div class="container">
-      © <span id="year"></span> Dr. Reshma Khatun. All rights reserved.
-    </div>
-  </footer>
-
-  <!-- SCHOLAR MODAL -->
-  <div id="scholarModal" class="modal">
-
+  <div id="scholar-modal" class="modal" aria-hidden="true">
     <div class="modal-box">
-
-      <button
-        class="modal-close"
-        onclick="closeScholarModal()"
-        aria-label="Close"
-      >
-        ×
-      </button>
-
-      <h2 id="modalScholarName"></h2>
-
-      <div id="modalScholarContent" class="modal-content"></div>
-
+      <button id="modal-close" class="modal-close" type="button" aria-label="Close">×</button>
+      <div class="section-kicker">RESEARCH SCHOLAR</div>
+      <h2 id="modal-scholar-name"></h2>
+      <div id="modal-scholar-content" class="modal-content"></div>
     </div>
-
   </div>
 
   <script>
-    /*
-      ============================================================
-      CLEAN PUBLIC WEBSITE
-      ============================================================
-    */
+    "use strict";
 
-    document.getElementById("year").textContent =
-      new Date().getFullYear();
+    const escapeHTML = (value) => String(value ?? "")
+      .replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;").replaceAll('"', "&quot;")
+      .replaceAll("'", "&#039;");
 
-
-    /* ------------------------------------------------------------
-       Supabase connection check
-       ------------------------------------------------------------ */
-
-    function getSupabaseClient() {
-
-      if (window.supabaseClient) {
-        return window.supabaseClient;
-      }
-
-      if (
-        window.supabase &&
-        typeof window.supabase.createClient === "function"
-      ) {
-        console.warn(
-          "supabaseClient was not exposed by supabase-config.js"
-        );
-      }
-
-      return null;
-    }
-
-
-    /* ------------------------------------------------------------
-       Scholars
-       ------------------------------------------------------------ */
-
-    async function loadScholars() {
-
-      const grid = document.getElementById("scholarsGrid");
-      const client = getSupabaseClient();
-
-      if (!client) {
-        grid.innerHTML =
-          '<div class="status-box error-box">Supabase connection not available.</div>';
-        return;
-      }
-
+    const safeURL = (value) => {
+      const raw = String(value ?? "").trim();
+      if (!raw) return "";
       try {
+        const url = new URL(raw, window.location.origin);
+        if (["http:", "https:", "mailto:"].includes(url.protocol)) return escapeHTML(url.href);
+      } catch (_) {}
+      return "";
+    };
 
-        const { data, error } = await client
-          .from("phd_scholars")
-          .select("*")
-          .order("year", { ascending: false });
+    const client = () => window.supabaseClient || null;
 
-        if (error) {
-          throw error;
-        }
+    const showError = (element, message) => {
+      if (element) element.innerHTML = '<p class="error-message">' + escapeHTML(message) + '</p>';
+    };
 
-        if (!data || data.length === 0) {
-          grid.innerHTML =
-            '<div class="status-box">No scholar records available.</div>';
-          return;
-        }
+    const formatDate = (value) => {
+      if (!value) return "";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return escapeHTML(value);
+      return escapeHTML(date.toLocaleDateString("en-IN", {day:"2-digit", month:"short", year:"numeric"}));
+    };
 
-        grid.innerHTML = "";
+    /* ---------------- SCHOLAR MODAL ---------------- */
+    const modal = document.getElementById("scholar-modal");
+    const modalName = document.getElementById("modal-scholar-name");
+    const modalContent = document.getElementById("modal-scholar-content");
 
-        data.forEach(function(scholar) {
-
-          const card = document.createElement("div");
-          card.className = "card item-card";
-
-          card.innerHTML = `
-            <h3>${escapeHtml(scholar.scholar_name || "")}</h3>
-
-            <p>
-              ${escapeHtml(scholar.research_title || "")}
-            </p>
-
-            <div class="meta">
-              ${escapeHtml(scholar.status || "")}
-              ${scholar.year ? " · " + escapeHtml(String(scholar.year)) : ""}
-            </div>
-
-            <button class="details-btn">
-              View Details
-            </button>
-          `;
-
-          card
-            .querySelector(".details-btn")
-            .addEventListener("click", function() {
-
-              openScholarModal(
-                scholar.scholar_name || "",
-                scholar.details || "No additional details available."
-              );
-
-            });
-
-          grid.appendChild(card);
-
-        });
-
-      } catch (error) {
-
-        console.error("Scholar loading error:", error);
-
-        grid.innerHTML =
-          '<div class="status-box error-box">Unable to load scholars.</div>';
-      }
+    function openScholarModal(scholar) {
+      modalName.textContent = scholar.scholar_name || "Research Scholar";
+      modalContent.textContent = scholar.details || "No additional details available.";
+      modal.classList.add("show");
+      modal.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden";
     }
-
-
-    /* ------------------------------------------------------------
-       Publications
-       ------------------------------------------------------------ */
-
-    async function loadPublications() {
-
-      const grid = document.getElementById("publicationsGrid");
-      const client = getSupabaseClient();
-
-      if (!client) {
-        grid.innerHTML =
-          '<div class="status-box error-box">Supabase connection not available.</div>';
-        return;
-      }
-
-      try {
-
-        const [
-          booksResult,
-          chaptersResult,
-          journalsResult
-        ] = await Promise.all([
-
-          client
-            .from("books")
-            .select("*")
-            .order("sort_order", { ascending: true }),
-
-          client
-            .from("book_chapters")
-            .select("*")
-            .order("sort_order", { ascending: true }),
-
-          client
-            .from("journal_papers")
-            .select("*")
-            .order("sort_order", { ascending: true })
-
-        ]);
-
-        if (booksResult.error) {
-          throw booksResult.error;
-        }
-
-        if (chaptersResult.error) {
-          throw chaptersResult.error;
-        }
-
-        if (journalsResult.error) {
-          throw journalsResult.error;
-        }
-
-        const books = booksResult.data || [];
-        const chapters = chaptersResult.data || [];
-        const journals = journalsResult.data || [];
-
-        const all = [];
-
-        books.forEach(function(item) {
-          all.push({
-            type: "Book",
-            title: item.title,
-            authors: item.authors,
-            publisher: item.publisher,
-            year: item.year,
-            extra: item.isbn ? "ISBN: " + item.isbn : ""
-          });
-        });
-
-        chapters.forEach(function(item) {
-          all.push({
-            type: "Book Chapter",
-            title: item.title,
-            authors: item.authors,
-            publisher: item.publisher,
-            year: item.year,
-            extra: item.book_title
-              ? "Book: " + item.book_title
-              : ""
-          });
-        });
-
-        journals.forEach(function(item) {
-          all.push({
-            type: "Journal Paper",
-            title: item.title,
-            authors: item.authors,
-            publisher: item.journal,
-            year: item.year,
-            extra: item.doi
-              ? "DOI: " + item.doi
-              : ""
-          });
-        });
-
-        if (all.length === 0) {
-          grid.innerHTML =
-            '<div class="status-box">No publications available.</div>';
-          return;
-        }
-
-        grid.innerHTML = "";
-
-        all.forEach(function(item) {
-
-          const card = document.createElement("div");
-          card.className = "card item-card";
-
-          card.innerHTML = `
-            <span class="badge">${escapeHtml(item.type)}</span>
-
-            <h3 style="margin-top:12px;">
-              ${escapeHtml(item.title || "")}
-            </h3>
-
-            <p>
-              ${escapeHtml(item.authors || "")}
-            </p>
-
-            <div class="meta">
-              ${escapeHtml(item.publisher || "")}
-              ${item.year ? " · " + escapeHtml(String(item.year)) : ""}
-            </div>
-
-            ${
-              item.extra
-                ? `<div class="meta">${escapeHtml(item.extra)}</div>`
-                : ""
-            }
-          `;
-
-          grid.appendChild(card);
-
-        });
-
-      } catch (error) {
-
-        console.error("Publication loading error:", error);
-
-        grid.innerHTML =
-          '<div class="status-box error-box">Unable to load publications.</div>';
-      }
-    }
-
-
-    /* ------------------------------------------------------------
-       Notices
-       ------------------------------------------------------------ */
-
-    async function loadNotices() {
-
-      const grid = document.getElementById("noticesGrid");
-      const client = getSupabaseClient();
-
-      if (!client) {
-        grid.innerHTML =
-          '<div class="status-box error-box">Supabase connection not available.</div>';
-        return;
-      }
-
-      try {
-
-        const { data, error } = await client
-          .from("notices")
-          .select("*")
-          .eq("is_published", true)
-          .order("notice_date", { ascending: false });
-
-        if (error) {
-          throw error;
-        }
-
-        if (!data || data.length === 0) {
-          grid.innerHTML =
-            '<div class="status-box">No published notices available.</div>';
-          return;
-        }
-
-        grid.innerHTML = "";
-
-        data.forEach(function(notice) {
-
-          const card = document.createElement("div");
-          card.className = "card item-card";
-
-          const pdfButton = notice.pdf_url
-            ? `
-              <div style="margin-top:15px;">
-                <a
-                  href="${escapeAttribute(notice.pdf_url)}"
-                  target="_blank"
-                  rel="noopener"
-                  class="details-btn"
-                  style="display:inline-block;"
-                >
-                  View Notice
-                </a>
-              </div>
-            `
-            : "";
-
-          card.innerHTML = `
-            <h3>${escapeHtml(notice.title || "")}</h3>
-
-            <p>
-              ${escapeHtml(notice.description || "")}
-            </p>
-
-            <div class="meta">
-              ${notice.category ? escapeHtml(notice.category) + " · " : ""}
-              ${notice.notice_date
-                ? escapeHtml(String(notice.notice_date))
-                : ""}
-            </div>
-
-            ${pdfButton}
-          `;
-
-          grid.appendChild(card);
-
-        });
-
-      } catch (error) {
-
-        console.error("Notice loading error:", error);
-
-        grid.innerHTML =
-          '<div class="status-box error-box">Unable to load notices.</div>';
-      }
-    }
-
-
-    /* ------------------------------------------------------------
-       News
-       ------------------------------------------------------------ */
-
-    async function loadNews() {
-
-      const grid = document.getElementById("newsGrid");
-      const client = getSupabaseClient();
-
-      if (!client) {
-        grid.innerHTML =
-          '<div class="status-box error-box">Supabase connection not available.</div>';
-        return;
-      }
-
-      try {
-
-        const { data, error } = await client
-          .from("news")
-          .select("*")
-          .order("news_date", { ascending: false });
-
-        if (error) {
-          throw error;
-        }
-
-        if (!data || data.length === 0) {
-          grid.innerHTML =
-            '<div class="status-box">No news available.</div>';
-          return;
-        }
-
-        grid.innerHTML = "";
-
-        data.forEach(function(item) {
-
-          const card = document.createElement("div");
-          card.className = "card item-card";
-
-          card.innerHTML = `
-            ${
-              item.image_url
-                ? `
-                  <img
-                    src="${escapeAttribute(item.image_url)}"
-                    alt=""
-                    style="
-                      width:100%;
-                      height:180px;
-                      object-fit:cover;
-                      border-radius:10px;
-                      margin-bottom:15px;
-                    "
-                  >
-                `
-                : ""
-            }
-
-            <h3>${escapeHtml(item.title || "")}</h3>
-
-            <p>
-              ${escapeHtml(item.summary || item.content || "")}
-            </p>
-
-            <div class="meta">
-              ${
-                item.news_date
-                  ? escapeHtml(String(item.news_date))
-                  : ""
-              }
-            </div>
-          `;
-
-          grid.appendChild(card);
-
-        });
-
-      } catch (error) {
-
-        console.error("News loading error:", error);
-
-        grid.innerHTML =
-          '<div class="status-box error-box">Unable to load news.</div>';
-      }
-    }
-
-
-    /* ------------------------------------------------------------
-       Scholar modal
-       ------------------------------------------------------------ */
-
-    function openScholarModal(name, details) {
-
-      document.getElementById("modalScholarName").textContent =
-        name;
-
-      document.getElementById("modalScholarContent").textContent =
-        details;
-
-      document
-        .getElementById("scholarModal")
-        .classList.add("show");
-    }
-
 
     function closeScholarModal() {
-
-      document
-        .getElementById("scholarModal")
-        .classList.remove("show");
+      modal.classList.remove("show");
+      modal.setAttribute("aria-hidden", "true");
+      document.body.style.overflow = "";
     }
 
+    document.getElementById("modal-close").addEventListener("click", closeScholarModal);
+    modal.addEventListener("click", (event) => { if (event.target === modal) closeScholarModal(); });
+    document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeScholarModal(); });
 
-    document
-      .getElementById("scholarModal")
-      .addEventListener("click", function(event) {
+    /* ---------------- SCHOLARS ---------------- */
+    async function loadScholars() {
+      const list = document.getElementById("scholars-list");
+      const db = client();
+      if (!db) { showError(list, "Supabase client is not available."); return; }
+      try {
+        const { data, error } = await db.from("phd_scholars").select("*").order("year", {ascending:false});
+        if (error) throw error;
+        if (!data?.length) { list.innerHTML = '<article class="card"><p>No scholar records available.</p></article>'; return; }
+        list.innerHTML = data.map((scholar) => `
+          <article class="card scholar-card">
+            <span class="tag">${escapeHTML(scholar.status || "RESEARCH SCHOLAR")}</span>
+            <h3>${escapeHTML(scholar.scholar_name || "")}</h3>
+            <p>${escapeHTML(scholar.research_title || "")}</p>
+            <button type="button" class="btn primary scholar-details-btn">View Details</button>
+            ${scholar.year ? `<div class="scholar-year">${escapeHTML(scholar.year)}</div>` : ""}
+          </article>
+        `).join("");
+        list.querySelectorAll(".scholar-details-btn").forEach((button, index) => button.addEventListener("click", () => openScholarModal(data[index])));
+      } catch (error) {
+        console.error("Scholar loading error:", error);
+        showError(list, "Unable to load scholars. Please check the Supabase connection.");
+      }
+    }
 
-        if (event.target === this) {
-          closeScholarModal();
-        }
+    /* ---------------- PUBLICATIONS ---------------- */
+    async function loadPublications() {
+      const allList = document.getElementById("all-publications-list");
+      const booksList = document.getElementById("books-list");
+      const chaptersList = document.getElementById("chapters-list");
+      const journalsList = document.getElementById("journals-list");
+      const db = client();
+      if (!db) {
+        [allList,booksList,chaptersList,journalsList].forEach((el) => showError(el, "Supabase client is not available."));
+        return;
+      }
+      try {
+        const [booksRes, chaptersRes, journalsRes] = await Promise.all([
+          db.from("books").select("*").order("year", {ascending:false}).order("sort_order", {ascending:true}),
+          db.from("book_chapters").select("*").order("year", {ascending:false}).order("sort_order", {ascending:true}),
+          db.from("journal_papers").select("*").order("year", {ascending:false}).order("sort_order", {ascending:true})
+        ]);
+        if (booksRes.error) throw booksRes.error;
+        if (chaptersRes.error) throw chaptersRes.error;
+        if (journalsRes.error) throw journalsRes.error;
+        const books = booksRes.data || [], chapters = chaptersRes.data || [], journals = journalsRes.data || [];
 
+        booksList.innerHTML = books.length ? books.map((book) => `
+          <article><span>${escapeHTML(book.year || "")}</span><div>
+            <h3>${escapeHTML(book.title || "")}</h3>
+            <p>${escapeHTML(book.authors || "")}${book.publisher ? " · " + escapeHTML(book.publisher) : ""}${book.isbn ? " · ISBN: " + escapeHTML(book.isbn) : ""}</p>
+            ${book.url && safeURL(book.url) ? `<a href="${safeURL(book.url)}" target="_blank" rel="noopener noreferrer">View Publication</a>` : ""}
+          </div></article>`).join("") : "<p>No books available.</p>";
+
+        chaptersList.innerHTML = chapters.length ? chapters.map((item) => `
+          <article><span>${escapeHTML(item.year || "")}</span><div>
+            <h3>${escapeHTML(item.title || "")}</h3>
+            <p>${escapeHTML(item.authors || "")}${item.book_title ? " · " + escapeHTML(item.book_title) : ""}${item.publisher ? " · " + escapeHTML(item.publisher) : ""}${item.isbn ? " · ISBN: " + escapeHTML(item.isbn) : ""}${item.pages ? " · " + escapeHTML(item.pages) : ""}</p>
+            ${item.url && safeURL(item.url) ? `<a href="${safeURL(item.url)}" target="_blank" rel="noopener noreferrer">View Chapter</a>` : ""}
+          </div></article>`).join("") : "<p>No book chapters available.</p>";
+
+        journalsList.innerHTML = journals.length ? journals.map((paper) => {
+          const doiText = String(paper.doi || "").trim();
+          const doiURL = doiText ? (doiText.startsWith("http") ? doiText : "https://doi.org/" + doiText) : "";
+          return `<article><span>${escapeHTML(paper.year || "")}</span><div>
+            <h3>${escapeHTML(paper.title || "")}</h3>
+            <p>${escapeHTML(paper.authors || "")}${paper.journal ? " · " + escapeHTML(paper.journal) : ""}${paper.volume_issue ? " · " + escapeHTML(paper.volume_issue) : ""}${paper.pages ? " · " + escapeHTML(paper.pages) : ""}</p>
+            ${doiURL && safeURL(doiURL) ? `<p>DOI: <a href="${safeURL(doiURL)}" target="_blank" rel="noopener noreferrer">${escapeHTML(doiText)}</a></p>` : ""}
+            ${paper.indexing ? `<small>Indexing: ${escapeHTML(paper.indexing)}</small>` : ""}
+            ${paper.url && safeURL(paper.url) ? `<br><a href="${safeURL(paper.url)}" target="_blank" rel="noopener noreferrer">View Paper</a>` : ""}
+          </div></article>`;
+        }).join("") : "<p>No journal papers available.</p>";
+
+        const all = [
+          ...books.map(x => ({type:"Book", year:x.year, title:x.title, authors:x.authors, description:x.publisher, url:x.url})),
+          ...chapters.map(x => ({type:"Book Chapter", year:x.year, title:x.title, authors:x.authors, description:x.book_title, url:x.url})),
+          ...journals.map(x => ({type:"Journal Paper", year:x.year, title:x.title, authors:x.authors, description:x.journal, url:x.url}))
+        ].sort((a,b) => Number(b.year || 0) - Number(a.year || 0));
+
+        allList.innerHTML = all.length ? all.map((item) => `
+          <article><span>${escapeHTML(item.year || "")}</span><div>
+            <small>${escapeHTML(item.type)}</small>
+            <h3>${escapeHTML(item.title || "")}</h3>
+            <p>${escapeHTML(item.authors || "")}${item.description ? " · " + escapeHTML(item.description) : ""}</p>
+            ${item.url && safeURL(item.url) ? `<a href="${safeURL(item.url)}" target="_blank" rel="noopener noreferrer">View Publication</a>` : ""}
+          </div></article>`).join("") : "<p>No publications available.</p>";
+      } catch (error) {
+        console.error("Publication loading error:", error);
+        showError(allList, "Unable to load publications. Please check the Supabase connection.");
+        showError(booksList, "Unable to load books.");
+        showError(chaptersList, "Unable to load book chapters.");
+        showError(journalsList, "Unable to load journal papers.");
+      }
+    }
+
+    /* ---------------- NOTICES ---------------- */
+    async function loadNotices() {
+      const list = document.getElementById("notices-list");
+      const db = client();
+      if (!db) { showError(list, "Supabase client is not available."); return; }
+      try {
+        const {data, error} = await db.from("notices").select("*").eq("is_published", true).order("notice_date", {ascending:false});
+        if (error) throw error;
+        if (!data?.length) { list.innerHTML = "<p>No published notices available.</p>"; return; }
+        list.innerHTML = data.map((notice) => `
+          <article><span>${formatDate(notice.notice_date)}</span><div>
+            <h3>${escapeHTML(notice.title || "")}</h3>
+            <p>${escapeHTML(notice.description || "")}</p>
+            ${notice.category ? `<small>Category: ${escapeHTML(notice.category)}</small>` : ""}
+            ${notice.pdf_url && safeURL(notice.pdf_url) ? `<br><a href="${safeURL(notice.pdf_url)}" target="_blank" rel="noopener noreferrer">View / Download Notice</a>` : ""}
+          </div></article>`).join("");
+      } catch (error) {
+        console.error("Notice loading error:", error);
+        showError(list, "Unable to load notices. Please check the Supabase connection.");
+      }
+    }
+
+    /* ---------------- NEWS ---------------- */
+    async function loadNews() {
+      const list = document.getElementById("news-list");
+      const db = client();
+      if (!db) { showError(list, "Supabase client is not available."); return; }
+      try {
+        const {data, error} = await db.from("news").select("*").order("news_date", {ascending:false});
+        if (error) throw error;
+        if (!data?.length) { list.innerHTML = '<article class="card"><p>No news available.</p></article>'; return; }
+        list.innerHTML = data.map((item) => `
+          <article class="card">
+            ${item.image_url && safeURL(item.image_url) ? `<img src="${safeURL(item.image_url)}" alt="" style="max-width:100%;border-radius:8px;margin-top:10px;">` : ""}
+            <h3>${escapeHTML(item.title || "")}</h3>
+            <p>${escapeHTML(item.summary || item.content || "")}</p>
+            ${item.news_date ? `<small>${formatDate(item.news_date)}</small>` : ""}
+          </article>`).join("");
+      } catch (error) {
+        console.error("News loading error:", error);
+        showError(list, "Unable to load news. Please check the Supabase connection.");
+      }
+    }
+
+    /* ---------------- PUBLICATION TABS ---------------- */
+    document.querySelectorAll(".pub-tab").forEach((button) => {
+      button.addEventListener("click", () => {
+        const tab = button.dataset.tab;
+        document.querySelectorAll(".pub-tab").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".publication-panel").forEach((panel) => { panel.classList.remove("active"); panel.style.display = "none"; });
+        button.classList.add("active");
+        const panel = document.getElementById("pub-" + tab);
+        if (panel) { panel.classList.add("active"); panel.style.display = "block"; }
       });
-
-
-    /* ------------------------------------------------------------
-       Security / HTML helpers
-       ------------------------------------------------------------ */
-
-    function escapeHtml(value) {
-
-      return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-    }
-
-
-    function escapeAttribute(value) {
-
-      return escapeHtml(value);
-    }
-
-
-    /* ------------------------------------------------------------
-       Start
-       ------------------------------------------------------------ */
-
-    document.addEventListener("DOMContentLoaded", function() {
-
-      loadScholars();
-      loadPublications();
-      loadNotices();
-      loadNews();
-
     });
 
+    document.addEventListener("DOMContentLoaded", async () => {
+      if (!client()) {
+        console.error("Supabase client is not available. Check supabase-config.js.");
+        return;
+      }
+      await Promise.all([loadScholars(), loadPublications(), loadNotices(), loadNews()]);
+    });
   </script>
-
 </body>
 </html>
