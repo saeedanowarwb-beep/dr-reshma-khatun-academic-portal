@@ -1,245 +1,519 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin Dashboard | Dr. Reshma Khatun</title><link rel="stylesheet" href="styles.css"><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-config.js"></script></head>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin Dashboard | Dr. Reshma Khatun</title>
+
+  <link rel="stylesheet" href="styles.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+
+  <style>
+    .admin-wrap{max-width:1200px;margin:auto;padding:30px 20px 70px}
+    .login-box{max-width:430px;margin:70px auto;padding:30px;background:#fff;border:1px solid var(--line);border-radius:20px;box-shadow:var(--shadow)}
+    .admin-toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;margin-bottom:24px}
+    .admin-toolbar .actions{margin:0}
+    .admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+    .admin-card{padding:22px}
+    .admin-panel{display:none;background:#fff;border:1px solid var(--line);border-radius:20px;padding:24px;margin-top:24px}
+    .admin-panel.open{display:block}
+    .admin-panel h2{margin-top:0}
+    .admin-form{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+    .admin-form .full{grid-column:1/-1}
+    .admin-form input,.admin-form textarea,.admin-form select{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;box-sizing:border-box;background:#fff}
+    .admin-form textarea{min-height:110px;resize:vertical}
+    .admin-form label{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:5px}
+    .admin-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
+    .admin-message{min-height:22px;margin:8px 0 0}
+    .admin-record{padding:18px 0;border-top:1px solid var(--line)}
+    .admin-record h3{margin:0 0 7px}
+    .admin-record p{margin:4px 0;color:var(--muted);white-space:pre-line}
+    .admin-record-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+    .admin-btn{border:1px solid var(--line);background:#fff;color:var(--ink);padding:9px 13px;border-radius:10px;font:inherit;font-weight:700;cursor:pointer}
+    .admin-btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+    .admin-btn.danger{border-color:#c63c32;color:#a92820}
+    .admin-btn:hover{filter:brightness(.97)}
+    .admin-status{margin:10px 0 18px;padding:12px 15px;border-radius:12px;background:#f7f9ff;border:1px solid #dbe3ff}
+    .hidden{display:none!important}
+    .muted{color:var(--muted)}
+    @media(max-width:900px){.admin-grid{grid-template-columns:repeat(2,1fr)}}
+    @media(max-width:650px){.admin-grid,.admin-form{grid-template-columns:1fr}.admin-form .full{grid-column:auto}}
+  </style>
+</head>
+
 <body class="admin-body">
-<header class="topbar"><div class="wrap nav-wrap"><a class="brand" href="index.html">Dr. Reshma Khatun</a><span class="admin-pill">Admin Preview</span><button id="logoutBtn" style="margin-left:15px;">Logout</button></div></header>
-<div id="loginBox" style="max-width:420px;margin:40px auto;padding:25px;border:1px solid #ddd;border-radius:10px;">
-  <h2>Admin Login</h2>
 
-  <input id="loginEmail" type="email" placeholder="Email" style="width:100%;padding:10px;margin:8px 0;">
+<header class="topbar">
+  <div class="wrap nav-wrap">
+    <a class="brand" href="index.html">Dr. Reshma Khatun</a>
+    <span class="admin-pill">Admin Dashboard</span>
+    <button id="logoutBtn" class="admin-btn hidden" type="button">Logout</button>
+  </div>
+</header>
 
-  <input id="loginPassword" type="password" placeholder="Password" style="width:100%;padding:10px;margin:8px 0;">
+<section id="loginBox" class="login-box">
+  <div class="section-kicker">SECURE ACCESS</div>
+  <h1>Admin Login</h1>
+  <p class="muted">Sign in with an authorized administrator account.</p>
 
-  <button id="loginBtn">Login</button>
+  <label for="loginEmail">Email</label>
+  <input id="loginEmail" type="email" autocomplete="username"
+         style="width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;box-sizing:border-box;margin:6px 0 12px">
 
-  <p id="loginMessage"></p>
-</div>
-<main class="section"><div class="wrap">
-    <div class="section-kicker">ADMIN DASHBOARD</div><h1>Manage Academic Portal</h1>
-    <div class="admin-notice">This is the Phase-1 dashboard mockup. Secure login, database, file uploads and live editing will be connected in the Supabase phase.</div>
-  <div id="noticeForm" style="display:none;margin:25px 0;padding:25px;border:1px solid #ddd;border-radius:10px;">
-  <h2>Add Notice</h2>
+  <label for="loginPassword">Password</label>
+  <input id="loginPassword" type="password" autocomplete="current-password"
+         style="width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;box-sizing:border-box;margin:6px 0 12px">
 
-  <input id="noticeTitle" type="text" placeholder="Notice Title" style="width:100%;padding:10px;margin:8px 0;">
+  <button id="loginBtn" class="admin-btn primary" type="button">Login</button>
+  <p id="loginMessage" class="admin-message"></p>
+</section>
 
-  <textarea id="noticeDescription" placeholder="Notice Description" style="width:100%;padding:10px;margin:8px 0;"></textarea>
+<main id="adminApp" class="hidden">
+  <div class="admin-wrap">
 
-  <input id="noticeDate" type="date" style="padding:10px;margin:8px 0;">
+    <div class="admin-toolbar">
+      <div>
+        <div class="section-kicker">ADMINISTRATION</div>
+        <h1>Manage Academic Portal</h1>
+        <p id="signedInAs" class="muted"></p>
+      </div>
 
-  <input id="noticeCategory" type="text" placeholder="Category" style="width:100%;padding:10px;margin:8px 0;">
-
-  <input id="noticePdf" type="url" placeholder="PDF URL (optional)" style="width:100%;padding:10px;margin:8px 0;">
-
-  <label style="display:block;margin:10px 0;">
-    <input id="noticePublished" type="checkbox">
-    Publish this notice
-  </label>
-
-  <button id="saveNoticeBtn">Save Notice</button>
-  <button id="cancelNoticeBtn" type="button">Cancel</button>
-
-  <p id="noticeMessage"></p>
-</div>
-  <div id="scholarForm" style="display:none;margin:25px 0;padding:25px;border:1px solid #ddd;border-radius:10px;">
-  <h2>Add PhD Scholar</h2>
-
-  <input id="scholarName" type="text" placeholder="Scholar Name"
-    style="width:100%;padding:10px;margin:8px 0;">
-
-  <textarea id="researchTitle" placeholder="Research Title"
-    style="width:100%;padding:10px;margin:8px 0;"></textarea>
-
-  <input id="scholarStatus" type="text" placeholder="Status (Ongoing/Awarded/Submitted)"
-    style="width:100%;padding:10px;margin:8px 0;">
-
-  <input id="scholarYear" type="number" placeholder="Year"
-    style="width:100%;padding:10px;margin:8px 0;">
-
-  <textarea id="scholarDetails" placeholder="Details (optional)"
-    style="width:100%;padding:10px;margin:8px 0;"></textarea>
-
-  <button id="saveScholarBtn">Save Scholar</button>
-  <button id="cancelScholarBtn" type="button">Cancel</button>
-
-  <p id="scholarMessage"></p>
-</div>
-    <div class="cards three admin-cards">
-      <article class="card"><h3>Profile</h3><p>Edit name, designation, bio, specialization and contact details.</p><button>Edit Profile</button></article>
-      <article class="card"><h3>Notices</h3><p>Create, publish, edit and remove notices.</p><button id="addNoticeBtn">Add Notice</button></article>
-      <article class="card"><h3>Resources</h3><p>Upload PDFs and study materials.</p><button>Upload PDF</button></article>
-      <article class="card"><h3>Routine</h3><p>Update weekly class routine and teaching schedule.</p><button>Edit Routine</button></article>
-      <article class="card"><h3>Scholars</h3><p>Manage ongoing, awarded and submitted scholars.</p><button id="manageScholarsBtn">Manage Scholars</button></article>
-      <article class="card"><h3>Publications</h3><p>Add journal papers, books and book chapters.</p><button>Add Publication</button></article>
-      <article class="card"><h3>News & Events</h3><p>Publish academic activities and announcements.</p><button>Add Update</button></article>
-      <article class="card"><h3>Gallery</h3><p>Upload seminar, workshop and academic event photos.</p><button>Upload Images</button></article>
-      <article class="card"><h3>Site Settings</h3><p>Manage portal title, footer text and social/research links.</p><button>Settings</button></article>
+      <div class="actions">
+        <a class="admin-btn" href="index.html">View Website</a>
+      </div>
     </div>
-  </div></main>
-  <script>
-document.addEventListener("DOMContentLoaded", async function () {
 
-  const loginBox = document.getElementById("loginBox");
-  const loginBtn = document.getElementById("loginBtn");
-  const emailInput = document.getElementById("loginEmail");
-  const passwordInput = document.getElementById("loginPassword");
-  const message = document.getElementById("loginMessage");
-  const dashboard = document.querySelector("main.section");
+    <div class="admin-status">
+      <strong>Supabase-connected admin panel.</strong>
+      Use the management cards below to add or delete portal records.
+    </div>
 
-  dashboard.style.display = "none";
+    <section class="admin-grid" id="adminCards"></section>
+    <section id="adminPanels"></section>
 
-  const { data: { session } } = await supabaseClient.auth.getSession();
+  </div>
+</main>
 
-async function checkAdmin(userId) {
-  const { data, error } = await supabaseClient
-    .from("admin_users")
-    .select("user_id")
-    .eq("user_id", userId)
-    .maybeSingle();
+<script>
+(() => {
+  "use strict";
 
-  return !error && !!data;
-}
+  const S = window.supabaseClient;
+  const $ = (id) => document.getElementById(id);
 
-if (session) {
-  const admin = await checkAdmin(session.user.id);
-
-  if (admin) {
-    loginBox.style.display = "none";
-    dashboard.style.display = "block";
-  } else {
-    message.textContent = "You are not authorized as an administrator.";
+  if (!S) {
+    $("loginMessage").textContent =
+      "Supabase client is unavailable. Check supabase-config.js.";
+    return;
   }
-}
 
-  loginBtn.addEventListener("click", async function () {
+  const esc = (value) => String(value ?? "").replace(/[&<>"']/g, (c) => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
 
-  message.textContent = "Logging in...";
+  const configs = {
+    notices: {
+      title: "Notices",
+      description: "Add and remove published academic notices.",
+      fields: [
+        ["title","Title","text",true],
+        ["description","Description","textarea",true],
+        ["notice_date","Notice Date","date",true],
+        ["category","Category","text",false],
+        ["pdf_url","PDF URL","url",false],
+        ["is_published","Publish","checkbox",false]
+      ]
+    },
 
-  const { data, error } = await supabaseClient.auth.signInWithPassword({
-    email: emailInput.value.trim(),
-    password: passwordInput.value
+    phd_scholars: {
+      title: "PhD Scholars",
+      description: "Add and remove research scholars.",
+      fields: [
+        ["scholar_name","Scholar Name","text",true],
+        ["research_title","Research Title","textarea",true],
+        ["status","Status","text",true],
+        ["year","Year","number",true],
+        ["details","Full Details","textarea",false]
+      ]
+    },
+
+    books: {
+      title: "Books",
+      description: "Add and remove books.",
+      fields: [
+        ["title","Title","textarea",true],
+        ["authors","Authors","text",false],
+        ["publisher","Publisher","text",false],
+        ["year","Year","number",false],
+        ["isbn","ISBN","text",false],
+        ["sort_order","Sort Order","number",false]
+      ]
+    },
+
+    book_chapters: {
+      title: "Book Chapters",
+      description: "Add and remove book chapters.",
+      fields: [
+        ["title","Chapter Title","textarea",true],
+        ["authors","Authors","text",false],
+        ["book_title","Book Title","text",false],
+        ["publisher","Publisher","text",false],
+        ["year","Year","number",false],
+        ["isbn","ISBN","text",false],
+        ["pages","Pages","text",false],
+        ["doi","DOI","text",false],
+        ["url","URL","url",false],
+        ["sort_order","Sort Order","number",false]
+      ]
+    },
+
+    journal_papers: {
+      title: "Journal Papers",
+      description: "Add and remove journal papers.",
+      fields: [
+        ["title","Title","textarea",true],
+        ["authors","Authors","text",false],
+        ["journal","Journal","text",false],
+        ["year","Year","number",false],
+        ["volume_issue","Volume / Issue","text",false],
+        ["pages","Pages","text",false],
+        ["issn","ISSN","text",false],
+        ["doi","DOI","text",false],
+        ["indexing","Indexing","text",false],
+        ["url","Article URL","url",false],
+        ["sort_order","Sort Order","number",false]
+      ]
+    },
+
+    news: {
+      title: "News",
+      description: "Add and remove news and updates.",
+      fields: [
+        ["title","Title","text",true],
+        ["summary","Summary","textarea",false],
+        ["content","Content","textarea",false],
+        ["news_date","News Date","date",false],
+        ["image_url","Image URL","url",false]
+      ]
+    },
+
+    resources: {
+      title: "Resources",
+      description: "Add and remove academic resources.",
+      fields: [
+        ["title","Title","text",true],
+        ["description","Description","textarea",false],
+        ["category","Category","text",false],
+        ["file_url","File / Resource URL","url",true]
+      ]
+    },
+
+    routine: {
+      title: "Routine",
+      description: "Add and remove routine entries.",
+      fields: [
+        ["day_name","Day","text",true],
+        ["class_time","Class Time","text",true],
+        ["course_name","Course Name","text",true],
+        ["semester","Semester","text",false],
+        ["room","Room","text",false],
+        ["details","Details","textarea",false]
+      ]
+    }
+  };
+
+  const cards = $("adminCards");
+  const panels = $("adminPanels");
+
+  Object.entries(configs).forEach(([table, config]) => {
+    cards.insertAdjacentHTML("beforeend", `
+      <article class="card admin-card">
+        <h3>${esc(config.title)}</h3>
+        <p>${esc(config.description)}</p>
+        <button class="admin-btn primary" type="button" data-open="${table}">
+          Manage
+        </button>
+      </article>
+    `);
+
+    panels.insertAdjacentHTML("beforeend", `
+      <section id="panel-${table}" class="admin-panel">
+        <div class="admin-toolbar">
+          <div>
+            <h2>${esc(config.title)}</h2>
+            <p class="muted">${esc(config.description)}</p>
+          </div>
+          <button class="admin-btn" type="button" data-close="${table}">
+            Close
+          </button>
+        </div>
+
+        <form id="form-${table}" class="admin-form"></form>
+        <p id="msg-${table}" class="admin-message"></p>
+        <div id="records-${table}"></div>
+      </section>
+    `);
+
+    const form = $(`form-${table}`);
+
+    config.fields.forEach(([key,label,type,required]) => {
+      const full = type === "textarea" ? "full" : "";
+      const req = required ? "required" : "";
+      let control = "";
+
+      if (type === "checkbox") {
+        control = `
+          <label class="full" style="display:flex;align-items:center;gap:8px;">
+            <input id="${table}-${key}" type="checkbox">
+            <span>${esc(label)}</span>
+          </label>`;
+      } else if (type === "textarea") {
+        control = `
+          <div class="${full}">
+            <label for="${table}-${key}">${esc(label)}</label>
+            <textarea id="${table}-${key}" ${req}></textarea>
+          </div>`;
+      } else {
+        control = `
+          <div>
+            <label for="${table}-${key}">${esc(label)}</label>
+            <input id="${table}-${key}" type="${type}" ${req}>
+          </div>`;
+      }
+
+      form.insertAdjacentHTML("beforeend", control);
+    });
+
+    form.insertAdjacentHTML("beforeend", `
+      <div class="admin-actions full">
+        <button class="admin-btn primary" type="submit">Save Record</button>
+        <button class="admin-btn" type="reset">Clear</button>
+      </div>
+    `);
   });
 
-  if (error) {
-    message.textContent = error.message;
-    return;
+  function valueOf(table, key, type) {
+    const el = $(`${table}-${key}`);
+    if (type === "checkbox") return el.checked;
+
+    const value = el.value.trim();
+    if (!value) return null;
+
+    if (type === "number") return Number(value);
+    return value;
   }
 
-  const admin = await checkAdmin(data.user.id);
+  async function isAdmin(userId) {
+    const { data, error } = await S
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", userId)
+      .maybeSingle();
 
-  if (!admin) {
-    await supabaseClient.auth.signOut();
-    message.textContent = "You are not authorized as an administrator.";
-    return;
+    return !error && !!data;
   }
 
-  loginBox.style.display = "none";
-  dashboard.style.display = "block";
-
-});
-document.getElementById("logoutBtn").addEventListener("click", async function () {
-  await supabaseClient.auth.signOut();
-  window.location.reload();
-});
- document.getElementById("addNoticeBtn").addEventListener("click", function () {
-  document.getElementById("noticeForm").style.display = "block";
-});
-
-document.getElementById("manageScholarsBtn").addEventListener("click", function () {
-  document.getElementById("scholarForm").style.display = "block";
-});
-
-document.getElementById("cancelScholarBtn").addEventListener("click", function () {
-  document.getElementById("scholarForm").style.display = "none";
-});
-  document.getElementById("saveScholarBtn").addEventListener("click", async function () {
-
-  const scholarName = document.getElementById("scholarName").value.trim();
-  const researchTitle = document.getElementById("researchTitle").value.trim();
-  const scholarStatus = document.getElementById("scholarStatus").value.trim();
-  const scholarYear = document.getElementById("scholarYear").value;
-  const scholarDetails = document.getElementById("scholarDetails").value.trim();
-  const scholarMessage = document.getElementById("scholarMessage");
-
-
-  if (!scholarName || !researchTitle || !scholarStatus || !scholarYear) {
-    scholarMessage.textContent = "Please fill in the scholar name, research title, status and year.";
-    return;
+  function showApp(user) {
+    $("loginBox").classList.add("hidden");
+    $("adminApp").classList.remove("hidden");
+    $("logoutBtn").classList.remove("hidden");
+    $("signedInAs").textContent =
+      "Signed in as " + (user.email || "");
   }
 
-  scholarMessage.textContent = "Saving scholar...";
+  async function login() {
+    $("loginMessage").textContent = "Logging in...";
 
-  const { error } = await supabaseClient
-    .from("phd_scholars")
-    .insert([{
-      scholar_name: scholarName,
-      research_title: researchTitle,
-      status: scholarStatus,
-      year: parseInt(scholarYear),
-      details: scholarDetails || null
-    }]);
+    const { data, error } = await S.auth.signInWithPassword({
+      email: $("loginEmail").value.trim(),
+      password: $("loginPassword").value
+    });
 
-  if (error) {
-    scholarMessage.textContent = "Error: " + error.message;
-    return;
+    if (error) {
+      $("loginMessage").textContent = error.message;
+      return;
+    }
+
+    if (!data.user || !(await isAdmin(data.user.id))) {
+      await S.auth.signOut();
+      $("loginMessage").textContent =
+        "You are not authorized as an administrator.";
+      return;
+    }
+
+    showApp(data.user);
   }
 
-  scholarMessage.textContent = "Scholar saved successfully.";
+  async function loadRecords(table) {
+    const box = $(`records-${table}`);
+    const msg = $(`msg-${table}`);
 
-  document.getElementById("scholarName").value = "";
-  document.getElementById("researchTitle").value = "";
-  document.getElementById("scholarStatus").value = "";
-  document.getElementById("scholarYear").value = "";
-  document.getElementById("scholarDetails").value = "";
+    msg.textContent = "Loading records...";
 
-});
+    const { data, error } = await S
+      .from(table)
+      .select("*")
+      .order("id", { ascending:false });
 
-document.getElementById("cancelNoticeBtn").addEventListener("click", function () {
-  document.getElementById("noticeForm").style.display = "none";
-});
- document.getElementById("saveNoticeBtn").addEventListener("click", async function () {
+    if (error) {
+      msg.textContent = "Error: " + error.message;
+      box.innerHTML = "";
+      return;
+    }
 
-  const title = document.getElementById("noticeTitle").value.trim();
-  const description = document.getElementById("noticeDescription").value.trim();
-  const noticeDate = document.getElementById("noticeDate").value;
-  const category = document.getElementById("noticeCategory").value.trim();
-  const pdfUrl = document.getElementById("noticePdf").value.trim();
-  const isPublished = document.getElementById("noticePublished").checked;
-  const noticeMessage = document.getElementById("noticeMessage");
+    msg.textContent = "";
 
-  if (!title || !description || !noticeDate) {
-    noticeMessage.textContent = "Please fill in the title, description and date.";
-    return;
+    if (!data || !data.length) {
+      box.innerHTML = '<p class="muted">No records available.</p>';
+      return;
+    }
+
+    box.innerHTML = data.map((row) => {
+      const config = configs[table];
+
+      const heading =
+        row.title ||
+        row.scholar_name ||
+        row.course_name ||
+        row.day_name ||
+        "Record";
+
+      const details = config.fields
+        .map(([key,label,type]) => {
+          const value = row[key];
+
+          if (
+            value === null ||
+            value === undefined ||
+            value === "" ||
+            key === "title" ||
+            key === "scholar_name"
+          ) return "";
+
+          if (type === "checkbox") {
+            return `<p><strong>${esc(label)}:</strong> ${value ? "Yes" : "No"}</p>`;
+          }
+
+          return `<p><strong>${esc(label)}:</strong> ${esc(value)}</p>`;
+        })
+        .filter(Boolean)
+        .join("");
+
+      return `
+        <article class="admin-record">
+          <h3>${esc(heading)}</h3>
+          ${details}
+
+          <div class="admin-record-actions">
+            <button
+              class="admin-btn danger"
+              type="button"
+              data-delete="${table}"
+              data-id="${esc(row.id)}">
+              Delete
+            </button>
+          </div>
+        </article>`;
+    }).join("");
+
+    box.querySelectorAll("[data-delete]").forEach((button) => {
+      button.addEventListener("click", async () => {
+        if (!confirm("Are you sure you want to delete this record?")) {
+          return;
+        }
+
+        const tableName = button.dataset.delete;
+        const recordId = button.dataset.id;
+
+        const { error: deleteError } = await S
+          .from(tableName)
+          .delete()
+          .eq("id", recordId);
+
+        if (deleteError) {
+          alert(deleteError.message);
+          return;
+        }
+
+        loadRecords(tableName);
+      });
+    });
   }
 
-  noticeMessage.textContent = "Saving notice...";
+  function openPanel(table) {
+    document.querySelectorAll(".admin-panel")
+      .forEach((panel) => panel.classList.remove("open"));
 
-  const { error } = await supabaseClient
-    .from("notices")
-    .insert([{
-      title: title,
-      description: description,
-      notice_date: noticeDate,
-      category: category || null,
-      pdf_url: pdfUrl || null,
-      is_published: isPublished
-    }]);
+    const panel = $(`panel-${table}`);
+    panel.classList.add("open");
+    panel.scrollIntoView({behavior:"smooth",block:"start"});
 
-  if (error) {
-    noticeMessage.textContent = "Error: " + error.message;
-    return;
+    loadRecords(table);
   }
 
-  noticeMessage.textContent = "Notice saved successfully.";
+  document.querySelectorAll("[data-open]").forEach((button) => {
+    button.addEventListener("click", () => {
+      openPanel(button.dataset.open);
+    });
+  });
 
-  document.getElementById("noticeTitle").value = "";
-  document.getElementById("noticeDescription").value = "";
-  document.getElementById("noticeDate").value = "";
-  document.getElementById("noticeCategory").value = "";
-  document.getElementById("noticePdf").value = "";
-  document.getElementById("noticePublished").checked = false;
+  document.querySelectorAll("[data-close]").forEach((button) => {
+    button.addEventListener("click", () => {
+      $(`panel-${button.dataset.close}`).classList.remove("open");
+    });
+  });
 
-});
+  Object.entries(configs).forEach(([table, config]) => {
+    $(`form-${table}`).addEventListener("submit", async (event) => {
+      event.preventDefault();
 
-});
+      const msg = $(`msg-${table}`);
+      msg.textContent = "Saving...";
+
+      const payload = {};
+
+      config.fields.forEach(([key,,type]) => {
+        payload[key] = valueOf(table, key, type);
+      });
+
+      const { error } = await S
+        .from(table)
+        .insert([payload]);
+
+      if (error) {
+        msg.textContent = "Error: " + error.message;
+        return;
+      }
+
+      msg.textContent = "Saved successfully.";
+      event.target.reset();
+      await loadRecords(table);
+    });
+  });
+
+  $("loginBtn").addEventListener("click", login);
+
+  $("loginPassword").addEventListener("keydown", (event) => {
+    if (event.key === "Enter") login();
+  });
+
+  $("logoutBtn").addEventListener("click", async () => {
+    await S.auth.signOut();
+    window.location.reload();
+  });
+
+  (async () => {
+    const { data:{session} } = await S.auth.getSession();
+
+    if (session && await isAdmin(session.user.id)) {
+      showApp(session.user);
+    }
+  })();
+
+})();
 </script>
-</body></html>
+
+</body>
+</html>
